@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import fr.nivcoo.pointz.Points;
+import fr.nivcoo.pointz.Pointz;
 import fr.nivcoo.pointz.commands.SendCommand;
 import fr.nivcoo.pointz.configuration.Config;
 import fr.nivcoo.pointz.configuration.DataBase;
@@ -43,9 +43,9 @@ public class guiShop implements Listener {
 
 	@SuppressWarnings("deprecation")
 	public guiShop(Plugin p) {
-		int row = ((Points.getItems.size() + 8) / 9) * 9;
+		int row = ((Pointz.getItems.size() + 8) / 9) * 9;
 		String guiName = "Shop";
-		for (Configurations getGuiName : Points.getConfig) {
+		for (Configurations getGuiName : Pointz.getConfig) {
 			if (!getGuiName.getShopName().isEmpty())
 				guiName = getGuiName.getShopName();
 		}
@@ -53,7 +53,7 @@ public class guiShop implements Listener {
 		invConfirm = Bukkit.getServer().createInventory(null, 18, "Confirmation");
 		int i = 0;
 		ItemStack itemList;
-		for (Items items : Points.getItems) {
+		for (Items items : Pointz.getItems) {
 
 			itemList = createItem(Material.getMaterial(items.getId()), items.getName(), items.getPriceIg(),
 					items.getPrice());
@@ -136,14 +136,14 @@ public class guiShop implements Listener {
 		Player player = (Player) e.getWhoClicked();
 		if (e.getInventory().getName().equalsIgnoreCase(inv.getName())) {
 			inventoryPlayer.put(player.getUniqueId(), e.getSlot());
-			Items item = Points.getItems.get(inventoryPlayer.get(player.getUniqueId()));
-			Points.guiShop.showConfirm(player.getPlayer(), e.getCurrentItem().getItemMeta(),
+			Items item = Pointz.getItems.get(inventoryPlayer.get(player.getUniqueId()));
+			Pointz.guiShop.showConfirm(player.getPlayer(), e.getCurrentItem().getItemMeta(),
 					e.getCurrentItem().getType(), item.getPriceIg());
 
 		}
 
 		else {
-			Items item = Points.getItems.get(inventoryPlayer.get(player.getUniqueId()));
+			Items item = Pointz.getItems.get(inventoryPlayer.get(player.getUniqueId()));
 			if ((itemConfirm2 != null)
 					&& e.getCurrentItem().getItemMeta().getDisplayName()
 							.equalsIgnoreCase(itemConfirm2.getItemMeta().getDisplayName())

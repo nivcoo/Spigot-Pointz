@@ -1,7 +1,7 @@
-name: Points
-version: 6.0
+name: Pointz
+version: 0.0.1
 author: nivcoo
-main: me.nivcoo.points.Points
+main: fr.nivcoo.pointz.Pointz
 commands:
   points:
     description: List of commands
@@ -10,21 +10,21 @@ commands:
   pgui:
     description: gui
 permissions:
-  points.command:
+  pointz.command:
     default: op
     description: /points list
-  points.send:
+  pointz.send:
     default: op
     description: Send money
-  points.manage:
+  pointz.manage:
     default: op
     description: Add/del/set Money
-  points.check:
+  pointz.check:
     default: op
     description: Check money
-  points.gui:
+  pointz.gui:
     default: op
     description: Check money
-  points.shop:
+  pointz.shop:
     default: op
     description: Shop IG

@@ -1,4 +1,3 @@
-
 prefix: "&c[Points]&3 "
 
 command-title: "Liste des commandes"
@@ -29,7 +28,7 @@ not-connected: "Le joueurs n'est pas co !"
 no-require-money: "Tu n'as pas assez d'argent !"
 
 
-only-number: "Seul les nombres sont acceptés"
+only-number: "Seul les nombres sont acceptï¿½s"
 
 #keep {0}, {1}, {2}
 check-command: "Tu as {1} points sur la boutique"

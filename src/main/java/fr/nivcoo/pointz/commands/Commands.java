@@ -8,7 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import fr.nivcoo.pointz.Points;
+import fr.nivcoo.pointz.Pointz;
 import fr.nivcoo.pointz.configuration.Config;
 import fr.nivcoo.pointz.configuration.DataBase;
 
@@ -52,7 +52,7 @@ public class Commands implements CommandExecutor {
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
 				if (p.hasPermission("points.shop")) {
-					Points.guiShop.show(p.getPlayer());
+					Pointz.guiShop.show(p.getPlayer());
 				} else {
 					p.sendMessage(PrefixPoint + message.getString("no-permission"));
 				}
@@ -66,7 +66,7 @@ public class Commands implements CommandExecutor {
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
 				if (p.hasPermission("points.gui")) {
-					Points.guiPS.show(p.getPlayer());
+					Pointz.guiPS.show(p.getPlayer());
 				} else {
 					p.sendMessage(PrefixPoint + message.getString("no-permission"));
 				}

@@ -18,7 +18,7 @@ import fr.nivcoo.pointz.constructor.Configurations;
 import fr.nivcoo.pointz.constructor.Items;
 import fr.nivcoo.pointz.constructor.Offers;
 
-public class Points extends JavaPlugin implements Listener {
+public class Pointz extends JavaPlugin implements Listener {
 	public Config config = new Config(new File("plugins" + File.separator + "Points" + File.separator + "config.yml"));;
 	public Config messageConfig = new Config(
 			new File("plugins" + File.separator + "Points" + File.separator + "message.yml"));;

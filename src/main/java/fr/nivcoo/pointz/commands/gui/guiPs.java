@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import fr.nivcoo.pointz.Points;
+import fr.nivcoo.pointz.Pointz;
 import fr.nivcoo.pointz.commands.SendCommand;
 import fr.nivcoo.pointz.configuration.Config;
 import fr.nivcoo.pointz.configuration.DataBase;
@@ -41,15 +41,15 @@ public class guiPs implements Listener {
 	@SuppressWarnings("deprecation")
 	public guiPs(Plugin p) {
 		String guiName = "Achat de Points";
-		int row = ((Points.getOffers.size() + 8) / 9) * 9;
-		for (Configurations getGuiName : Points.getConfig) {
+		int row = ((Pointz.getOffers.size() + 8) / 9) * 9;
+		for (Configurations getGuiName : Pointz.getConfig) {
 			if (!getGuiName.getGuiName().isEmpty())
 				guiName = getGuiName.getGuiName();
 		}
 		inv = Bukkit.getServer().createInventory(null, row, "�r" + guiName);
 		int i = 0;
 		ItemStack itemList;
-		for (Offers offers : Points.getOffers) {
+		for (Offers offers : Pointz.getOffers) {
 			itemList = createItem(Material.getMaterial(offers.getIcon()), offers.getName(), offers.getLores(),
 					offers.getPriceIg(), offers.getPrice());
 			inv.setItem(i, itemList);
@@ -100,7 +100,7 @@ public class guiPs implements Listener {
 
 		if (e.getInventory().getName().equalsIgnoreCase(inv.getName())) {
 			inventoryPlayer.put(player.getUniqueId(), e.getSlot());
-			Offers offer = Points.getOffers.get(inventoryPlayer.get(player.getUniqueId()));
+			Offers offer = Pointz.getOffers.get(inventoryPlayer.get(player.getUniqueId()));
 			String playerName = player.getName();
 			String playerNameWebsite = bdd.getString("SELECT pseudo FROM users WHERE pseudo = '" + playerName + "';",
 					1);
