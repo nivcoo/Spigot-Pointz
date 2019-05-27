@@ -1,0 +1,56 @@
+
+prefix: "&c[Points]&3 "
+
+command-title: "Liste des commandes"
+#Start help
+command-check: "&3/points check  "
+command-check-desc: "Regarder le nombre de point boutique que l'on a."
+
+command-send: "&3/points send <player> <nombre>  "
+command-send-desc: "- Envoyer ses points a un joueur."
+
+command-admin-desc: "- admin."
+command-set: "&3/points set <player> <nombre>  "
+command-add: "&3/points add <player> <nombre>  "
+command-del: "&3/points del <player> <nombre>  "
+
+command-shop: "&3/pshop  "
+command-shop-desc: "- Ouvre le shop IG."
+
+command-gui: "&3/pgui  "
+command-gui-desc: "- Ouvre la boutique des points."
+
+#Stop help
+no-permission: "&3Tu n'as pas la permission"
+no-register: "Le joueur n'est pas inscrit sur le site"
+no-register-own: "Tu n'es pas inscrit sur le site"
+not-connected: "Le joueurs n'est pas co !"
+
+no-require-money: "Tu n'as pas assez d'argent !"
+
+
+only-number: "Seul les nombres sont acceptés"
+
+#keep {0}, {1}, {2}
+check-command: "Tu as {1} points sur la boutique"
+
+command-set-own: "Tu viens de mettre {0} points sur la boutique a {1} !"
+command-set-other: "{0} vient de te mettre {1} points sur la boutique !"
+
+command-add-own: "Tu viens de donner {0} points sur la boutique a {1} !"
+command-add-other: "{0} vient de te donner {1} points sur la boutique !"
+
+command-del-own: "Tu viens de t'enlever {0} points sur la boutique a {1} !"
+command-del-other: "{0} vient de te t'enlever {1} points sur la boutique !"
+
+send-old: "Tu avais {1} points sur la boutique"
+send-new: "Tu as maintenant {1} points sur la boutique"
+send-cible: "{0} vient de te donner {1} points sur la boutique"
+
+#pgui gui success
+menu-gui-success-ig: "Tu viens de payer {1} points sur la boutique in game"
+menu-gui-success-web: "Tu as maintenant {1} points sur la boutique"
+
+#pshop gui success
+menu-shop-success-ig: "Tu viens de payer {1}$ et tu viens de recevoir ton achat !"
+menu-shop-success-web: "Tu viens de payer {1}points et tu viens de recevoir ton achat !"

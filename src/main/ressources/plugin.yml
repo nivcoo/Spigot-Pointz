@@ -1,0 +1,30 @@
+name: Points
+version: 6.0
+author: nivcoo
+main: me.nivcoo.points.Points
+commands:
+  points:
+    description: List of commands
+  pshop:
+    description: shop
+  pgui:
+    description: gui
+permissions:
+  points.command:
+    default: op
+    description: /points list
+  points.send:
+    default: op
+    description: Send money
+  points.manage:
+    default: op
+    description: Add/del/set Money
+  points.check:
+    default: op
+    description: Check money
+  points.gui:
+    default: op
+    description: Check money
+  points.shop:
+    default: op
+    description: Shop IG
