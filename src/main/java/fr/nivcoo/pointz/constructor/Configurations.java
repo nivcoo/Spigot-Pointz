@@ -10,13 +10,13 @@ public class Configurations {
 		this.name_gui = name_gui;
 	}
 
-	public String getShopName() {
-		return name_shop.replace("&", "�");
+	public String getGuiShopName() {
+		return name_shop.replace("&", "§");
 
 	}
 
-	public String getGuiName() {
-		return name_gui.replace("&", "�");
+	public String getGuiConverterName() {
+		return name_gui.replace("&", "§");
 
 	}
 

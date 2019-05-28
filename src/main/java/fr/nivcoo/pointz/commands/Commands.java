@@ -1,7 +1,5 @@
 package fr.nivcoo.pointz.commands;
 
-import java.io.File;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,32 +11,28 @@ import fr.nivcoo.pointz.configuration.Config;
 import fr.nivcoo.pointz.configuration.DataBase;
 
 public class Commands implements CommandExecutor {
-	Config config = new Config(new File("plugins" + File.separator + "Points" + File.separator + "config.yml"));
-	Config message = new Config(new File("plugins" + File.separator + "Points" + File.separator + "message.yml"));
+	Config config =  Pointz.getConfiguration();
+	private Config message = Pointz.getMessages();
 	String PrefixPoint = message.getString("prefix");
-	String h = config.getString("host");
-	String n = config.getString("name");
-	String p = config.getString("pass");
-	String db = config.getString("dbName");
-	int po = config.getInt("port");
-	public DataBase bdd = new DataBase(h, db, n, p);
+	private DataBase bdd = Pointz.getBdd();
+	String onlyPlayer = "§cSeulement les joueurs InGame peut exécuter cette commande.";
 
 	public void help(CommandSender p) {
 
-		if (p.hasPermission("points.command")) {
+		if (p.hasPermission("pointz.command")) {
 			p.sendMessage(PrefixPoint + message.getString("command-title"));
-			if (p.hasPermission("points.check"))
+			if (p.hasPermission("pointz.check"))
 				p.sendMessage(message.getString("command-check") + message.getString("command-check-desc"));
-			if (p.hasPermission("points.send"))
+			if (p.hasPermission("pointz.send"))
 				p.sendMessage(message.getString("command-send") + message.getString("command-send-desc"));
-			if (p.hasPermission("points.manage")) {
+			if (p.hasPermission("pointz.manage")) {
 				p.sendMessage(message.getString("command-set") + message.getString("command-admin-desc"));
 				p.sendMessage(message.getString("command-add") + message.getString("command-admin-desc"));
 				p.sendMessage(message.getString("command-del") + message.getString("command-admin-desc"));
 			}
-			if (p.hasPermission("points.shop"))
+			if (p.hasPermission("pointz.shop"))
 				p.sendMessage(message.getString("command-shop") + message.getString("command-shop-desc"));
-			if (p.hasPermission("points.gui"))
+			if (p.hasPermission("pointz.gui"))
 				p.sendMessage(message.getString("command-gui") + message.getString("command-gui-desc"));
 		} else {
 			p.sendMessage(PrefixPoint + message.getString("no-permission"));
@@ -51,32 +45,32 @@ public class Commands implements CommandExecutor {
 		if (cmd.getName().equalsIgnoreCase("pshop")) {
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
-				if (p.hasPermission("points.shop")) {
-					Pointz.guiShop.show(p.getPlayer());
+				if (p.hasPermission("pointz.shop")) {
+					Pointz.guiShop.show(p.getPlayer(), 0);
 				} else {
 					p.sendMessage(PrefixPoint + message.getString("no-permission"));
 				}
 			} else {
-				sender.sendMessage("�cSeulement les joueurs InGame peuvent ex�cuter cette commande.");
+				sender.sendMessage(onlyPlayer);
 			}
 			return true;
 		}
 
-		if (cmd.getName().equalsIgnoreCase("pgui")) {
+		if (cmd.getName().equalsIgnoreCase("pconverter")) {
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
-				if (p.hasPermission("points.gui")) {
-					Pointz.guiPS.show(p.getPlayer());
+				if (p.hasPermission("pointz.converter")) {
+					Pointz.guiShop.show(p.getPlayer(), 1);
 				} else {
 					p.sendMessage(PrefixPoint + message.getString("no-permission"));
 				}
 			} else {
-				sender.sendMessage("�cSeulement les joueurs InGame peuvent ex�cuter cette commande.");
+				sender.sendMessage(onlyPlayer);
 			}
 			return true;
 		}
 
-		if (cmd.getName().equalsIgnoreCase("points")) {
+		if (cmd.getName().equalsIgnoreCase("pointz")) {
 			if (args.length == 0) {
 				this.help(sender);
 				return true;
@@ -87,7 +81,7 @@ public class Commands implements CommandExecutor {
 						Player p = (Player) sender;
 
 						if (args[0].equalsIgnoreCase("check")) {
-							if (p.hasPermission("points.check")) {
+							if (p.hasPermission("pointz.check")) {
 								String name = p.getName();
 								int bc = bdd.getInt("SELECT money FROM users WHERE pseudo = '" + name + "';", 1);
 								p.sendMessage(PrefixPoint + message.getString("check-command").replace("{1}", "" + bc));
@@ -98,7 +92,7 @@ public class Commands implements CommandExecutor {
 						}
 
 						if (args[0].equalsIgnoreCase("send")) {
-							if (p.hasPermission("points.send")) {
+							if (p.hasPermission("pointz.send")) {
 								p.sendMessage(PrefixPoint + message.getString("command-send"));
 							} else {
 								p.sendMessage(PrefixPoint + message.getString("no-permission"));
@@ -107,11 +101,11 @@ public class Commands implements CommandExecutor {
 						}
 
 					} else {
-						sender.sendMessage("�cSeulement les joueurs InGame peuvent ex�cuter cette commande.");
+						sender.sendMessage(onlyPlayer);
 					}
 				}
 
-				else if (sender.hasPermission("points.manage")) {
+				else if (sender.hasPermission("pointz.manage")) {
 					if (args[0].equalsIgnoreCase("set")) {
 						sender.sendMessage(PrefixPoint + message.getString("command-set"));
 						return true;
@@ -138,7 +132,7 @@ public class Commands implements CommandExecutor {
 				if (sender instanceof Player) {
 					Player p = (Player) sender;
 					if (args[0].equalsIgnoreCase("send") && !args[1].equalsIgnoreCase("")) {
-						if (p.hasPermission("points.send")) {
+						if (p.hasPermission("pointz.send")) {
 							p.sendMessage(PrefixPoint + message.getString("command-send"));
 							return true;
 						} else {
@@ -151,10 +145,10 @@ public class Commands implements CommandExecutor {
 						return true;
 					}
 				} else {
-					sender.sendMessage("�cSeulement les joueurs InGame peuvent ex�cuter cette commande.");
+					sender.sendMessage(onlyPlayer);
 				}
 			}
-			else if (sender.hasPermission("points.manage")) {
+			else if (sender.hasPermission("pointz.manage")) {
 				if (args[0].equalsIgnoreCase("set") && !args[1].equalsIgnoreCase("")) {
 					sender.sendMessage(PrefixPoint + message.getString("command-set"));
 					return true;
@@ -177,7 +171,7 @@ public class Commands implements CommandExecutor {
 		if (args.length == 3) {
 			try {
 				int numberArgs = Integer.parseInt(args[2]);
-				if (sender.hasPermission("points.manage")) {
+				if (sender.hasPermission("pointz.manage")) {
 					if (args[0].equalsIgnoreCase("set") && !args[1].equalsIgnoreCase("") && numberArgs >= 0) {
 						Player cible = Bukkit.getPlayer(args[1]);
 						if (Bukkit.getOnlinePlayers().contains(cible)) {
@@ -273,7 +267,7 @@ public class Commands implements CommandExecutor {
 					Player p = (Player) sender;
 					if (args[0].equalsIgnoreCase("send") && !args[1].equalsIgnoreCase("") && numberArgs > 0) {
 
-						if (p.hasPermission("points.send")) {
+						if (p.hasPermission("pointz.send")) {
 							Player cible = Bukkit.getPlayer(args[1]);
 							if (Bukkit.getOnlinePlayers().contains(cible)) {
 								String name = p.getName();
@@ -323,7 +317,7 @@ public class Commands implements CommandExecutor {
 						return true;
 					}
 				} else {
-					sender.sendMessage("�cSeulement les joueurs InGame peuvent ex�cuter cette commande.");
+					sender.sendMessage(onlyPlayer);
 				}
 			} catch (NumberFormatException ex) {
 				sender.sendMessage(PrefixPoint + message.getString("only-number"));

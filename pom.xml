@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>fr.nivcoo</groupId>
-	<artifactId>Spigot-Pointz</artifactId>
+	<artifactId>Pointz</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Spigot-Pointz</name>
-	<url>http://maven.apache.org</url>
+	<name>Pointz</name>
+	<url>https://github.com/nivcoo/Spigot-Pointz/</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,4 +41,5 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	
 </project>

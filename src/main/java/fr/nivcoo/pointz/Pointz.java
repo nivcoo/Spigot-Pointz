@@ -6,54 +6,71 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.nivcoo.pointz.commands.Commands;
-import fr.nivcoo.pointz.commands.gui.guiPs;
-import fr.nivcoo.pointz.commands.gui.guiShop;
 import fr.nivcoo.pointz.configuration.Config;
 import fr.nivcoo.pointz.configuration.DataBase;
 import fr.nivcoo.pointz.constructor.Configurations;
 import fr.nivcoo.pointz.constructor.Items;
 import fr.nivcoo.pointz.constructor.Offers;
+import fr.nivcoo.pointz.gui.shop.GuiShop;
 
 public class Pointz extends JavaPlugin implements Listener {
-	public Config config = new Config(new File("plugins" + File.separator + "Points" + File.separator + "config.yml"));;
-	public Config messageConfig = new Config(
-			new File("plugins" + File.separator + "Points" + File.separator + "message.yml"));;
-	String h = config.getString("host");
-	String n = config.getString("name");
-	String p = config.getString("pass");
-	String db = config.getString("dbName");
-	public DataBase bdd = new DataBase(h, db, n, p);
+	private static Config config = new Config(
+			new File("plugins" + File.separator + "Pointz" + File.separator + "config.yml"));
+	private static Config configMessage = new Config(
+			new File("plugins" + File.separator + "Pointz" + File.separator + "message.yml"));
+	private static DataBase bdd;
 	private File message;
-	private File messageOld;
-	public static guiPs guiPS;
-	public static guiShop guiShop;
+	public static GuiShop guiShop;
 	public static List<Items> getItems;
 	public static List<Offers> getOffers;
 	public static List<Configurations> getConfig;
 
 	@Override
 	public void onEnable() {
+		bdd = new DataBase(config.getString("database.host"), config.getString("database.database"),
+				config.getString("database.username"), config.getString("database.password"));
+		Bukkit.getConsoleSender().sendMessage("§c===============§b==============");
+		Bukkit.getConsoleSender().sendMessage("§7Pointz §av" + this.getDescription().getVersion());
+		bdd.connection();
+		ResultSet getlistItems = null;
+		ResultSet getlistOffers = null;
+		ResultSet getlistConfig = null;
+		if (bdd.connected()) {
+			Bukkit.getConsoleSender().sendMessage("§7Database: §aOkay !");
+			getlistItems = bdd.getResultSet("SELECT * FROM pointz__items");
+			getlistOffers = bdd.getResultSet("SELECT * FROM pointz__offers");
+			getlistConfig = bdd.getResultSet("SELECT * FROM pointz__configurations");
+		} else
+			Bukkit.getConsoleSender().sendMessage("§7Database: §cNo !");
 
-		saveDefaultConfig();
-		message = new File(getDataFolder(), "message.yml");
-		messageOld = new File(getDataFolder(), "message.yml.BACK-4.5");
-
-		if (!(messageConfig.getString("menu-shop-success-ig") != null)) {
-			message.renameTo(messageOld);
+		if (getlistItems != null)
+			Bukkit.getConsoleSender().sendMessage("§7Plugin-Pointz: §aOkay !");
+		else
+			Bukkit.getConsoleSender().sendMessage("§7Plugin-Pointz: §cNo !");
+		Bukkit.getConsoleSender().sendMessage("");
+		if (bdd.connected() && getlistItems != null)
+			Bukkit.getConsoleSender().sendMessage("§aPlugin Enabled !");
+		else {
+			Bukkit.getConsoleSender().sendMessage("§cPlugin Disabled !");
+			Bukkit.getConsoleSender().sendMessage("§c==============§b===============");
+			Bukkit.getPluginManager().disablePlugin(this);
+			return;
 		}
 
+		Bukkit.getConsoleSender().sendMessage("§c==============§b===============");
+		message = new File(getDataFolder(), "message.yml");
 		if (!message.exists()) {
 			message.getParentFile().mkdirs();
 			saveResource("message.yml", false);
 		}
 
-		ResultSet getlistItems = bdd.getResultSet("SELECT * FROM pointz__items");
-		ResultSet getlistOffers = bdd.getResultSet("SELECT * FROM pointz__offers");
-		ResultSet getlistConfig = bdd.getResultSet("SELECT * FROM pointz__configurations");
+		saveDefaultConfig();
+
 		try {
 			getItems = new ArrayList<>();
 			getOffers = new ArrayList<>();
@@ -80,19 +97,27 @@ public class Pointz extends JavaPlugin implements Listener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		guiPS = new guiPs(this);
-		guiShop = new guiShop(this);
-		getCommand("points").setExecutor(new Commands());
+		guiShop = new GuiShop(this);
+		getCommand("pointz").setExecutor(new Commands());
 		getCommand("pshop").setExecutor(new Commands());
-		getCommand("pgui").setExecutor(new Commands());
-		bdd.connection();
-		System.out.println("[Points] Le plugin vient de s'allumer");
+		getCommand("pconverter").setExecutor(new Commands());
 	}
 
 	@Override
 	public void onDisable() {
-		System.out.println("[Points] Le plugin vient de s'eteindre");
 		bdd.disconnection();
+	}
+
+	public static Config getMessages() {
+		return configMessage;
+	}
+
+	public static Config getConfiguration() {
+		return config;
+	}
+
+	public static DataBase getBdd() {
+		return bdd;
 	}
 
 }

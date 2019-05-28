@@ -34,8 +34,6 @@ public class DataBase {
 			this.conn = DriverManager.getConnection(this.url, this.user, this.pass);
 
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("[Points] Impossible de se connecter a la base de donn�e");
 		}
 	}
 
@@ -68,7 +66,7 @@ public class DataBase {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return "NULL";
+		return null;
 	}
 
 	public ResultSet getResultSet(String request) {
@@ -77,7 +75,7 @@ public class DataBase {
 			Statement state = this.conn.createStatement();
 			return state.executeQuery(request);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return null;
 	}
@@ -110,7 +108,6 @@ public class DataBase {
 			state.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Erreur ! ");
 		}
 	}
 
@@ -127,7 +124,6 @@ public class DataBase {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Erreur ! ");
 		}
 	}
 

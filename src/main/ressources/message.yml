@@ -1,23 +1,23 @@
-prefix: "&c[Points]&3 "
+prefix: "&7[&c&lPointz&7] "
 
-command-title: "Liste des commandes"
+command-title: "&7Liste des commandes"
 #Start help
-command-check: "&3/points check  "
-command-check-desc: "Regarder le nombre de point boutique que l'on a."
+command-check: "&8&l- &a/pointz check  "
+command-check-desc: "&7- Regarder le nombre de point boutique que l'on a."
 
-command-send: "&3/points send <player> <nombre>  "
-command-send-desc: "- Envoyer ses points a un joueur."
+command-send: "&8&l- &a/pointz send <player> <nombre>  "
+command-send-desc: "&7- Envoyer ses points a un joueur."
 
-command-admin-desc: "- admin."
-command-set: "&3/points set <player> <nombre>  "
-command-add: "&3/points add <player> <nombre>  "
-command-del: "&3/points del <player> <nombre>  "
+command-admin-desc: "&7- admin."
+command-set: "&8&l- &a/pointz set <player> <nombre>  "
+command-add: "&8&l- &a/pointz add <player> <nombre>  "
+command-del: "&8&l- &a/pointz del <player> <nombre>  "
 
-command-shop: "&3/pshop  "
-command-shop-desc: "- Ouvre le shop IG."
+command-shop: "&8&l- &a/pshop  "
+command-shop-desc: "&7- Ouvre le shop IG."
 
-command-gui: "&3/pgui  "
-command-gui-desc: "- Ouvre la boutique des points."
+command-gui: "&8&l- &a/pconverter  "
+command-gui-desc: "&7- Ouvre le convertisseur de point boutique."
 
 #Stop help
 no-permission: "&3Tu n'as pas la permission"

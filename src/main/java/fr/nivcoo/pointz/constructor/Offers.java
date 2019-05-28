@@ -19,7 +19,7 @@ public class Offers {
 	}
 
 	public String getName() {
-		return name.replace("&", "�");
+		return name.replace("&", "§");
 
 	}
 

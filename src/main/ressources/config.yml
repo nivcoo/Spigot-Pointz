@@ -1,13 +1,10 @@
-###################################################################
-
-#Points
-
-#Config v6.0
-###################################################################
-
-host: "localhost"
-name: "root"
-pass: "pass"
-dbName: "mineweb"
-port: 3306
-
+#
+# MySQL settings.
+#
+database:
+    host: "localhost"
+    username: "root"
+    password: ""
+    database: "mineweb"
+    #default = 3306
+    port: 3306

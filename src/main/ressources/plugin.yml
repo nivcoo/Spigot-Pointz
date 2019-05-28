@@ -3,11 +3,11 @@ version: 0.0.1
 author: nivcoo
 main: fr.nivcoo.pointz.Pointz
 commands:
-  points:
+  pointz:
     description: List of commands
   pshop:
     description: shop
-  pgui:
+  pconverter:
     description: gui
 permissions:
   pointz.command:
@@ -22,9 +22,9 @@ permissions:
   pointz.check:
     default: op
     description: Check money
-  pointz.gui:
+  pointz.converter:
     default: op
-    description: Check money
+    description: Converter IG
   pointz.shop:
     default: op
     description: Shop IG

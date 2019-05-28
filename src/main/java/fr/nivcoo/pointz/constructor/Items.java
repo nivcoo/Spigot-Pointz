@@ -31,7 +31,7 @@ public class Items {
 
 	}
 
-	public int getId() {
+	public int getIcon() {
 		return icon;
 
 	}
