@@ -44,8 +44,8 @@ public class GuiShop implements Listener {
 
 	@SuppressWarnings("deprecation")
 	public GuiShop(Plugin p) {
-		int rowShop = ((Pointz.getItems.size() + 8) / 9) * 9;
-		int rowBuy = ((Pointz.getOffers.size() + 8) / 9) * 9;
+		int rowGui_shop = ((Pointz.getItems.size() + 8) / 9) * 9;
+		int rowGui_converter = ((Pointz.getOffers.size() + 8) / 9) * 9;
 		String guiShopName = "Shop";
 		String guiConverterName = "Shop";
 		for (Configurations getGuiName : Pointz.getConfig) {
@@ -55,8 +55,8 @@ public class GuiShop implements Listener {
 				guiConverterName = getGuiName.getGuiConverterName();
 		}
 		
-		invShop = Bukkit.getServer().createInventory(null, rowShop, guiShopName);
-		invConverter = Bukkit.getServer().createInventory(null, rowBuy, guiConverterName);
+		invShop = Bukkit.getServer().createInventory(null, rowGui_shop, guiShopName);
+		invConverter = Bukkit.getServer().createInventory(null, rowGui_converter, guiConverterName);
 		invConfirm = Bukkit.getServer().createInventory(null, 18, "Confirmation");
 		int i = 0;
 		ItemStack item;
@@ -81,9 +81,9 @@ public class GuiShop implements Listener {
 				lores.add(lore);
 				a++;
 			}
-			lores.add("§7- Prix : §c" + items.getPrice());
+			lores.add("§7- Gain boutique : §c" + items.getPrice());
 			if (items.getPriceIg() != 0)
-				lores.add("§7- Gain en jeux : §c" + items.getPriceIg());
+				lores.add("§7- Prix en jeux : §c" + items.getPriceIg() + "$");
 
 			item = CreateItems.item(Material.getMaterial(items.getIcon()), items.getName(), lores);
 			invConverter.setItem(i, item);
@@ -98,7 +98,7 @@ public class GuiShop implements Listener {
 		List<String> Lore = Arrays.asList("§c- §7Cliquez pour confirmer l'achat !");
 
 		if (getPriceIg > 0)
-			invConfirm.setItem(11, CreateItems.item(Material.STAINED_GLASS_PANE, "§aPrix en jeux| Confirmation", Lore));
+			invConfirm.setItem(11, CreateItems.item(Material.STAINED_GLASS_PANE, "§aPrix en jeux | Confirmation", Lore));
 
 		invConfirm.setItem(15, CreateItems.item(Material.STAINED_GLASS_PANE, "§aPrix | Confirmation", Lore));
 		p.openInventory(invConfirm);
@@ -164,9 +164,10 @@ public class GuiShop implements Listener {
 						if (playerMoney >= item.getPrice()) {
 							int removePlayerMoney = playerMoney - item.getPrice();
 							setPlayerMoney(player, removePlayerMoney);
+							Commands.sendCommand(player, item.getCmd());
 							player.sendMessage(message.getString("menu-shop-success-web", prefix,
 									String.valueOf(item.getPriceIg())));
-							Commands.sendCommand(player, item.getCmd());
+							return;
 						} else {
 							player.sendMessage(message.getString("no-require-money", prefix));
 							return;
@@ -239,7 +240,7 @@ public class GuiShop implements Listener {
 		Connection c = null;
 		ResultSet rs = null;
 		try {
-			c = Pointz.getBdd().getConnection();
+			c = bdd.getConnection();
 			ps = c.prepareStatement("SELECT money FROM users WHERE pseudo = ?");
 
 			ps.setString(1, player.getName());

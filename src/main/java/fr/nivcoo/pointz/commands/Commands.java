@@ -46,7 +46,7 @@ public class Commands implements CommandExecutor {
 
 	public static void sendCommand(Player player, String cmds) {
 		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-		for (String cmd : cmds.split("\\[[^\\[]*\\]")) {
+		for (String cmd : cmds.split("\\[\\{\\+\\}\\]")) {
 			Bukkit.dispatchCommand(console, cmd.replace("{PLAYER}", player.getName()));
 		}
 	}
