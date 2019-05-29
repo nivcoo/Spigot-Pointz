@@ -1,5 +1,9 @@
 package fr.nivcoo.pointz.gui.shop;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,6 +54,7 @@ public class GuiShop implements Listener {
 			if (!getGuiName.getGuiConverterName().isEmpty())
 				guiConverterName = getGuiName.getGuiConverterName();
 		}
+		
 		invShop = Bukkit.getServer().createInventory(null, rowShop, guiShopName);
 		invConverter = Bukkit.getServer().createInventory(null, rowBuy, guiConverterName);
 		invConfirm = Bukkit.getServer().createInventory(null, 18, "Confirmation");
@@ -149,28 +154,28 @@ public class GuiShop implements Listener {
 
 			} else if (e.getCurrentItem().getItemMeta().getDisplayName()
 					.equalsIgnoreCase(invConfirm.getItem(15).getItemMeta().getDisplayName())) {
+				try {
 
-				String playerName = player.getName();
-				String playerNameWebsite = bdd
-						.getString("SELECT pseudo FROM users WHERE pseudo = '" + playerName + "';", 1);
-				if (playerName.equalsIgnoreCase(playerNameWebsite)) {
-					int playerMoney = bdd.getInt("SELECT money FROM users WHERE pseudo = '" + playerName + "';", 1);
-					if (playerMoney >= item.getPrice()) {
-						double removePlayerMoney = playerMoney - item.getPrice();
-						/*
-						 * bdd.sendRequest("UPDATE users SET money = " + removePlayerMoney +
-						 * " WHERE pseudo = '" + playerName + "';");
-						 */
-						bdd.sendPreparedRequest("UPDATE", "users", "money", (int) removePlayerMoney, "pseudo",
-								playerName);
-						player.sendMessage(message.getString("menu-shop-success-web", prefix, String.valueOf(item.getPriceIg())));
-						Commands.sendCommand(player, item.getCmd());
+					String playerName = player.getName();
+					String playerNameWebsite = getPseudoPlayer(player);
+
+					if (playerName.equalsIgnoreCase(playerNameWebsite)) {
+						int playerMoney = getMoneyPlayer(player);
+						if (playerMoney >= item.getPrice()) {
+							int removePlayerMoney = playerMoney - item.getPrice();
+							setPlayerMoney(player, removePlayerMoney);
+							player.sendMessage(message.getString("menu-shop-success-web", prefix,
+									String.valueOf(item.getPriceIg())));
+							Commands.sendCommand(player, item.getCmd());
+						} else {
+							player.sendMessage(message.getString("no-require-money", prefix));
+							return;
+						}
 					} else {
-						player.sendMessage(message.getString("no-require-money", prefix));
-						return;
+						player.sendMessage(message.getString("no-register-own", prefix));
 					}
-				} else {
-					player.sendMessage(message.getString("no-register-own", prefix));
+				} catch (SQLException e1) {
+					e1.printStackTrace();
 				}
 				return;
 
@@ -193,39 +198,118 @@ public class GuiShop implements Listener {
 		Player player = (Player) e.getWhoClicked();
 
 		if (e.getInventory().getName().equalsIgnoreCase(invConverter.getName())) {
-			inventoryPlayer.put(player.getUniqueId(), e.getSlot());
-			Offers offer = Pointz.getOffers.get(inventoryPlayer.get(player.getUniqueId()));
-			String playerName = player.getName();
-			String playerNameWebsite = bdd.getString("SELECT pseudo FROM users WHERE pseudo = '" + playerName + "';",
-					1);
-			if (playerNameWebsite.equalsIgnoreCase(playerName)) {
-				RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager()
-						.getRegistration(Economy.class);
-				double playerMoney = rsp.getProvider().getBalance(player);
-				if (playerMoney >= offer.getPriceIg()) {
-					rsp.getProvider().withdrawPlayer(player, offer.getPriceIg());
-					int playerMoneyWebsite = bdd.getInt("SELECT money FROM users WHERE pseudo = '" + playerName + "';",
-							1);
-					int removePlayerMoney = playerMoneyWebsite + offer.getPrice();
-					/*
-					 * bdd.sendRequest( "UPDATE users SET money = " + removePlayerMoney +
-					 * " WHERE pseudo = '" + playerName + "';");
-					 */
-					bdd.sendPreparedRequest("UPDATE", "users", "money", (int) removePlayerMoney, "pseudo", playerName);
-					Commands.sendCommand(player, offer.getCmd());
-					player.sendMessage(message.getString("menu-converter-success-ig", prefix, String.valueOf(offer.getPrice())));
-					player.sendMessage(message.getString("menu-converter-success-web", prefix, String.valueOf(removePlayerMoney)));
+			try {
+				inventoryPlayer.put(player.getUniqueId(), e.getSlot());
+				Offers offer = Pointz.getOffers.get(inventoryPlayer.get(player.getUniqueId()));
+				String playerName = player.getName();
+				String playerNameWebsite = getPseudoPlayer(player);
+
+				if (playerNameWebsite.equalsIgnoreCase(playerName)) {
+					RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager()
+							.getRegistration(Economy.class);
+					double playerMoney = rsp.getProvider().getBalance(player);
+					if (playerMoney >= offer.getPriceIg()) {
+						rsp.getProvider().withdrawPlayer(player, offer.getPriceIg());
+						int playerMoneyWebsite = getMoneyPlayer(player);
+						int removePlayerMoney = playerMoneyWebsite + offer.getPrice();
+						setPlayerMoney(player, removePlayerMoney);
+						Commands.sendCommand(player, offer.getCmd());
+						player.sendMessage(message.getString("menu-converter-success-ig", prefix,
+								String.valueOf(offer.getPrice())));
+						player.sendMessage(message.getString("menu-converter-success-web", prefix,
+								String.valueOf(removePlayerMoney)));
+						return;
+					} else {
+						player.sendMessage(message.getString("no-require-money", prefix));
+					}
 					return;
 				} else {
-					player.sendMessage(message.getString("no-require-money", prefix));
+					player.sendMessage(message.getString("no-register-own", prefix));
 				}
-				return;
-			} else {
-				player.sendMessage(message.getString("no-register-own", prefix));
+			} catch (SQLException e1) {
+				e1.printStackTrace();
 			}
 			return;
 		}
 
+	}
+
+	private int getMoneyPlayer(Player player) throws SQLException {
+		PreparedStatement ps = null;
+		Connection c = null;
+		ResultSet rs = null;
+		try {
+			c = Pointz.getBdd().getConnection();
+			ps = c.prepareStatement("SELECT money FROM users WHERE pseudo = ?");
+
+			ps.setString(1, player.getName());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getInt("money");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ps.close();
+			c.close();
+		}
+		return 0;
+
+	}
+
+	private String getPseudoPlayer(Player player) throws SQLException {
+		Connection c = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			c = bdd.getConnection();
+			ps = c.prepareStatement("SELECT pseudo FROM users WHERE pseudo = ?");
+
+			ps.setString(1, player.getName());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getString("pseudo");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(c, ps, rs);
+		}
+		return null;
+
+	}
+
+	private void setPlayerMoney(Player player, int money) throws SQLException {
+		Connection c = null;
+		PreparedStatement ps = null;
+		try {
+			c = bdd.getConnection();
+			ps = c.prepareStatement("UPDATE users SET money = ? WHERE pseudo = ?");
+
+			ps.setInt(1, money);
+			ps.setString(2, player.getName());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(c, ps, null);
+		}
+
+	}
+
+	private void close(Connection c, PreparedStatement ps, ResultSet rs) {
+		try {
+			if (c != null)
+				c.close();
+			if (ps != null)
+				ps.close();
+			if (rs != null)
+				rs.close();
+		} catch (Exception e) {
+			System.out.println("Error while closing database c: " + e);
+		}
 	}
 
 }

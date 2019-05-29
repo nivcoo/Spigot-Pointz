@@ -73,6 +73,7 @@ public class Pointz extends JavaPlugin implements Listener {
 		saveDefaultConfig();
 
 		try {
+
 			getItems = new ArrayList<>();
 			getOffers = new ArrayList<>();
 			getConfig = new ArrayList<>();
@@ -94,19 +95,21 @@ public class Pointz extends JavaPlugin implements Listener {
 							getAllItems.getString("commands")));
 				}
 			}
+
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		guiShop = new GuiShop(this);
 		getCommand("pointz").setExecutor(new Commands());
 		getCommand("pshop").setExecutor(new GuiCommands());
 		getCommand("pconverter").setExecutor(new GuiCommands());
+		bdd.disconnection();
 	}
 
 	@Override
 	public void onDisable() {
 		bdd.disconnection();
+
 	}
 
 	public static Config getMessages() {

@@ -1,5 +1,10 @@
 package fr.nivcoo.pointz.commands;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -60,9 +65,13 @@ public class Commands implements CommandExecutor {
 
 					if (args[0].equalsIgnoreCase("check")) {
 						if (player.hasPermission("pointz.check")) {
-							String name = player.getName();
-							int bc = bdd.getInt("SELECT money FROM users WHERE pseudo = '" + name + "';", 1);
-							player.sendMessage(message.getString("check-command", prefix, String.valueOf(bc)));
+							try {
+								int money = getMoneyPlayer(player);
+
+								player.sendMessage(message.getString("check-command", prefix, String.valueOf(money)));
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
 						} else {
 							player.sendMessage(message.getString("no-permission", prefix));
 						}
@@ -78,41 +87,52 @@ public class Commands implements CommandExecutor {
 								String playerName = player.getName();
 
 								if (cible != null && cible != player) {
+									try {
 
-									String playerCible_web = bdd
-											.getString("SELECT pseudo FROM users WHERE pseudo = '" + args[1] + "';", 1);
-									if (playerCible_web != null && playerCible_web.equalsIgnoreCase(args[1])) {
-										String player_web = bdd.getString(
-												"SELECT pseudo FROM users WHERE pseudo = '" + playerName + "';", 1);
-										if (player_web.equalsIgnoreCase(playerName)) {
-											int getPlayer_money = bdd.getInt(
-													"SELECT money FROM users WHERE pseudo = '" + playerName + "';", 1);
-											if (getPlayer_money >= numberArg_2) {
-												int getPlayer_money_after = getPlayer_money - numberArg_2;
+										String playerCible_web = getPseudoPlayer(cible);
 
-												bdd.sendRequest("UPDATE users SET money = " + getPlayer_money_after
-														+ " WHERE pseudo = '" + playerName + "';");
-												int getCible_money = bdd.getInt(
-														"SELECT money FROM users WHERE pseudo = '" + args[1] + "';", 1);
-												int getCible_money_after = getCible_money + numberArg_2;
-												bdd.sendRequest("UPDATE users SET money = " + getCible_money_after
-														+ " WHERE pseudo = '" + args[1] + "';");
-												player.sendMessage(message
-														.getString("send-old", prefix, String.valueOf(getPlayer_money))
-														.replace("{1}", "" + getPlayer_money));
-												player.sendMessage(message.getString("send-new", prefix,
-														String.valueOf(getPlayer_money_after)));
-												cible.sendMessage(message.getString("send-cible", prefix,
-														String.valueOf(playerName), String.valueOf(numberArg_2)));
+										if (playerCible_web != null && playerCible_web.equalsIgnoreCase(args[1])) {
+											String player_web = this.getPseudoPlayer(player);
+											if (player_web.equalsIgnoreCase(playerName)) {
+												try {
+													int getPlayer_money = getMoneyPlayer(player);
+
+													if (getPlayer_money >= numberArg_2) {
+
+														int getPlayer_money_after = getPlayer_money - numberArg_2;
+														this.setPlayerMoney(player, getPlayer_money_after);
+														int getCible_money = 0;
+
+														getCible_money = this.getMoneyPlayer(cible);
+
+														int getCible_money_after = getCible_money + numberArg_2;
+														setPlayerMoney(cible, getCible_money_after);
+														player.sendMessage(message
+																.getString("send-old", prefix,
+																		String.valueOf(getPlayer_money))
+																.replace("{1}", "" + getPlayer_money));
+														player.sendMessage(message.getString("send-new", prefix,
+																String.valueOf(getPlayer_money_after)));
+														cible.sendMessage(message.getString("send-cible", prefix,
+																String.valueOf(playerName),
+																String.valueOf(numberArg_2)));
+
+													} else {
+														player.sendMessage(
+																message.getString("no-require-money", prefix));
+													}
+												} catch (SQLException e) {
+													e.printStackTrace();
+												}
+
 											} else {
-												player.sendMessage(message.getString("no-require-money", prefix));
+												player.sendMessage(message.getString("no-register-own", prefix));
 											}
-
 										} else {
-											player.sendMessage(message.getString("no-register-own", prefix));
+											player.sendMessage(message.getString("no-register", prefix));
 										}
-									} else {
-										player.sendMessage(message.getString("no-register", prefix));
+									} catch (SQLException e1) {
+										e1.printStackTrace();
 									}
 								} else {
 									player.sendMessage(message.getString("not-connected", prefix));
@@ -153,24 +173,22 @@ public class Commands implements CommandExecutor {
 					if (args[0].equalsIgnoreCase("set")) {
 						if (args.length == 3 && (!args[1].isEmpty() && Integer.parseInt(args[2]) >= 0)) {
 							if (Bukkit.getOnlinePlayers().contains(cible)) {
-								String player_web = bdd
-										.getString("SELECT pseudo FROM users WHERE pseudo = '" + args[1] + "';", 1);
+								try {
+									String player_web = getPseudoPlayer(cible);
 
-								if (player_web.equalsIgnoreCase(args[1])) {
-
-									/*
-									 * bdd.sendRequest("UPDATE users SET money = " + numberArgs +
-									 * " WHERE pseudo = '" + args[1] + "';");
-									 */
-									bdd.sendPreparedRequest("UPDATE", "users", "money", numberArg_2, "pseudo", args[1]);
-									if (sender != cible)
-										sender.sendMessage(message.getString("command-set-own", prefix,
-												String.valueOf(numberArg_2), String.valueOf(args[1])));
-									cible.sendMessage(message.getString("command-set-other", prefix,
-											String.valueOf(name), String.valueOf(numberArg_2)));
-									return true;
-								} else {
-									sender.sendMessage(message.getString("no-register", prefix));
+									if (player_web.equalsIgnoreCase(args[1])) {
+										setPlayerMoney(cible, numberArg_2);
+										if (sender != cible)
+											sender.sendMessage(message.getString("command-set-own", prefix,
+													String.valueOf(numberArg_2), String.valueOf(args[1])));
+										cible.sendMessage(message.getString("command-set-other", prefix,
+												String.valueOf(name), String.valueOf(numberArg_2)));
+										return true;
+									} else {
+										sender.sendMessage(message.getString("no-register", prefix));
+									}
+								} catch (SQLException e) {
+									e.printStackTrace();
 								}
 
 							}
@@ -182,28 +200,27 @@ public class Commands implements CommandExecutor {
 					} else if (args[0].equalsIgnoreCase("add")) {
 						if (args.length == 3 && (!args[1].isEmpty() && Integer.parseInt(args[2]) >= 0)) {
 							if (Bukkit.getOnlinePlayers().contains(cible)) {
-								String player_web = bdd
-										.getString("SELECT pseudo FROM users WHERE pseudo = '" + args[1] + "';", 1);
+								try {
+									String player_web = getPseudoPlayer(cible);
 
-								if (player_web.equalsIgnoreCase(args[1])) {
-									int playerMoney = bdd
-											.getInt("SELECT money FROM users WHERE pseudo = '" + args[1] + "';", 1);
-									int newPlayerMoney = playerMoney + numberArg_2;
-									/*
-									 * bdd.sendRequest("UPDATE users SET money = " + NewMoney + " WHERE pseudo = '"
-									 * + args[1] + "';");
-									 */
-									bdd.sendPreparedRequest("UPDATE", "users", "money", newPlayerMoney, "pseudo",
-											args[1]);
-									if (sender != cible)
-										sender.sendMessage(message.getString("command-add-own", prefix,
-												String.valueOf(numberArg_2), args[1]));
-									cible.sendMessage(message.getString("command-add-other", prefix, name,
-											String.valueOf(numberArg_2)));
-									return true;
+									if (player_web.equalsIgnoreCase(args[1])) {
 
-								} else {
-									sender.sendMessage(message.getString("no-register", prefix));
+										int playerMoney = getMoneyPlayer(cible);
+
+										int newPlayerMoney = playerMoney + numberArg_2;
+										setPlayerMoney(cible, newPlayerMoney);
+										if (sender != cible)
+											sender.sendMessage(message.getString("command-add-own", prefix,
+													String.valueOf(numberArg_2), args[1]));
+										cible.sendMessage(message.getString("command-add-other", prefix, name,
+												String.valueOf(numberArg_2)));
+										return true;
+
+									} else {
+										sender.sendMessage(message.getString("no-register", prefix));
+									}
+								} catch (SQLException e) {
+									e.printStackTrace();
 								}
 							} else {
 								sender.sendMessage(message.getString("not-connected", prefix));
@@ -216,31 +233,32 @@ public class Commands implements CommandExecutor {
 
 					} else if (args[0].equalsIgnoreCase("del")) {
 						if (Bukkit.getOnlinePlayers().contains(cible)) {
-							String player_web = bdd
-									.getString("SELECT pseudo FROM users WHERE pseudo = '" + args[1] + "';", 1);
+							try {
+								String player_web = getPseudoPlayer(cible);
 
-							if (player_web.equalsIgnoreCase(args[1])) {
-								int playerMoney = bdd
-										.getInt("SELECT money FROM users WHERE pseudo = '" + args[1] + "';", 1);
-								int newPlayerMoney = playerMoney - numberArg_2;
-								if (newPlayerMoney >= 0) {
-									/*
-									 * bdd.sendRequest("UPDATE users SET money = " + NewMoney + " WHERE pseudo = '"
-									 * + args[1] + "';");
-									 */
-									bdd.sendPreparedRequest("UPDATE", "users", "money", newPlayerMoney, "pseudo",
-											args[1]);
-									if (sender != cible)
-										sender.sendMessage(message.getString("command-del-own", prefix,
-												String.valueOf(numberArg_2), args[1]));
-									cible.sendMessage(message.getString("command-del-other", prefix, name,
-											String.valueOf(numberArg_2)));
-									return true;
+								if (player_web.equalsIgnoreCase(args[1])) {
+
+									int playerMoney = getMoneyPlayer(cible);
+
+									int newPlayerMoney = playerMoney - numberArg_2;
+									if (newPlayerMoney >= 0) {
+										setPlayerMoney(cible, newPlayerMoney);
+										if (sender != cible)
+											sender.sendMessage(message.getString("command-del-own", prefix,
+													String.valueOf(numberArg_2), args[1]));
+										cible.sendMessage(message.getString("command-del-other", prefix, name,
+												String.valueOf(numberArg_2)));
+										return true;
+
+									} else {
+										sender.sendMessage("Le joueur n'a pas autant d'argent.");
+									}
+
 								} else {
-									sender.sendMessage("Le joueur n'a pas autant d'argent.");
+									sender.sendMessage(message.getString("no-register", prefix));
 								}
-							} else {
-								sender.sendMessage(message.getString("no-register", prefix));
+							} catch (SQLException e) {
+								e.printStackTrace();
 							}
 						} else {
 							sender.sendMessage(message.getString("not-connected", prefix));
@@ -257,6 +275,84 @@ public class Commands implements CommandExecutor {
 		}
 
 		return false;
+	}
+
+	private int getMoneyPlayer(Player player) throws SQLException {
+		PreparedStatement ps = null;
+		Connection c = null;
+		ResultSet rs = null;
+		try {
+			c = Pointz.getBdd().getConnection();
+			ps = c.prepareStatement("SELECT money FROM users WHERE pseudo = ?");
+
+			ps.setString(1, player.getName());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getInt("money");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ps.close();
+			c.close();
+		}
+		return 0;
+
+	}
+
+	private String getPseudoPlayer(Player player) throws SQLException {
+		Connection c = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			c = bdd.getConnection();
+			ps = c.prepareStatement("SELECT pseudo FROM users WHERE pseudo = ?");
+
+			ps.setString(1, player.getName());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getString("pseudo");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(c, ps, rs);
+		}
+		return null;
+
+	}
+	
+	private void setPlayerMoney(Player player, int money) throws SQLException {
+		Connection c = null;
+		PreparedStatement ps = null;
+		try {
+			c = bdd.getConnection();
+			ps = c.prepareStatement("UPDATE users SET money = ? WHERE pseudo = ?");
+
+			ps.setInt(1, money);
+			ps.setString(2, player.getName());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(c, ps, null);
+		}
+
+	}
+
+	private void close(Connection c, PreparedStatement ps, ResultSet rs) {
+		try {
+			if (c != null)
+				c.close();
+			if (ps != null)
+				ps.close();
+			if (rs != null)
+				rs.close();
+		} catch (Exception e) {
+			System.out.println("Error while closing database c: " + e);
+		}
 	}
 
 }

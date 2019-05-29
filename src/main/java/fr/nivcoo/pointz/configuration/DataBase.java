@@ -2,7 +2,6 @@ package fr.nivcoo.pointz.configuration;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,8 +20,13 @@ public class DataBase {
 		this.user = u;
 		this.pass = p;
 		this.url = "jdbc:mysql://" + this.host + "/" + this.name;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
-
+	
 	public void connection() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -40,37 +44,28 @@ public class DataBase {
 	public boolean connected() {
 		return this.conn != null;
 	}
-
+	
 	private void connectIfNot() {
 		if (!this.connected())
 			this.connection();
 	}
+	
 
 	public void disconnection() {
 		if (this.connected())
 			this.conn = null;
 	}
 
-	public String getString(String request, int ci) {
-		this.connectIfNot();
-		try {
-			Statement state = this.conn.createStatement();
-			ResultSet result = state.executeQuery(request);
-			try {
-				while (result.next()) {
-					return result.getString(ci);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
+	public Connection getConnection() throws SQLException {
+
+		return DriverManager.getConnection(this.url, this.user, this.pass);
+
 	}
 
 	public ResultSet getResultSet(String request) {
+		
 		this.connectIfNot();
+
 		try {
 			Statement state = this.conn.createStatement();
 			return state.executeQuery(request);
@@ -80,51 +75,12 @@ public class DataBase {
 		return null;
 	}
 
-	public int getInt(String request, int ci) {
-		this.connectIfNot();
-		try {
-			Statement state = this.conn.createStatement();
-			ResultSet result = state.executeQuery(request);
-			try {
-				while (result.next()) {
-					return result.getInt(ci);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return -1;
+	public Connection getConn() {
+		return conn;
 	}
 
-	public void sendRequest(String request) {
-		this.connectIfNot();
-
-		try {
-			Statement state = this.conn.createStatement();
-
-			state.executeUpdate(request);
-			state.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void sendPreparedRequest(String type, String tableName, String columName, int columValue, String whereName,
-			String whereValue) {
-		this.connectIfNot();
-
-		try {
-			PreparedStatement rs = this.conn.prepareStatement(
-					type + " " + tableName + " SET " + columName + " = ? WHERE " + whereName + " = ?");
-			rs.setString(2, whereValue);
-			rs.setInt(1, columValue);
-			rs.executeUpdate();
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public void setConn(Connection conn) {
+		this.conn = conn;
 	}
 
 }
