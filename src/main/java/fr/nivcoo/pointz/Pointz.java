@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.nivcoo.pointz.commands.Commands;
+import fr.nivcoo.pointz.commands.GuiCommands;
 import fr.nivcoo.pointz.configuration.Config;
 import fr.nivcoo.pointz.configuration.DataBase;
 import fr.nivcoo.pointz.constructor.Configurations;
@@ -34,12 +35,12 @@ public class Pointz extends JavaPlugin implements Listener {
 	public void onEnable() {
 		bdd = new DataBase(config.getString("database.host"), config.getString("database.database"),
 				config.getString("database.username"), config.getString("database.password"));
-		Bukkit.getConsoleSender().sendMessage("§c===============§b==============");
-		Bukkit.getConsoleSender().sendMessage("§7Pointz §av" + this.getDescription().getVersion());
 		bdd.connection();
 		ResultSet getlistItems = null;
 		ResultSet getlistOffers = null;
 		ResultSet getlistConfig = null;
+		Bukkit.getConsoleSender().sendMessage("§c===============§b==============");
+		Bukkit.getConsoleSender().sendMessage("§7Pointz §av" + this.getDescription().getVersion());
 		if (bdd.connected()) {
 			Bukkit.getConsoleSender().sendMessage("§7Database: §aOkay !");
 			getlistItems = bdd.getResultSet("SELECT * FROM pointz__items");
@@ -99,8 +100,8 @@ public class Pointz extends JavaPlugin implements Listener {
 		}
 		guiShop = new GuiShop(this);
 		getCommand("pointz").setExecutor(new Commands());
-		getCommand("pshop").setExecutor(new Commands());
-		getCommand("pconverter").setExecutor(new Commands());
+		getCommand("pshop").setExecutor(new GuiCommands());
+		getCommand("pconverter").setExecutor(new GuiCommands());
 	}
 
 	@Override

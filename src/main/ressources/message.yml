@@ -1,55 +1,66 @@
-prefix: "&7[&c&lPointz&7] "
-
-command-title: "&7Liste des commandes"
-#Start help
+#
+# Messages fr_FR.
+# The placeholder {prefix} can be used everywhere,
+# but do not delete placeholder {1}
+#
+prefix: "&7[&c&lPointz&7]"
+# Title /help
+command-title: "{prefix} &7Liste des commandes"
+# Check command /help messages
 command-check: "&8&l- &a/pointz check  "
 command-check-desc: "&7- Regarder le nombre de point boutique que l'on a."
-
-command-send: "&8&l- &a/pointz send <player> <nombre>  "
+# Send command /help messages
+command-send: "&8&l- &a/pointz send <player> <number>  "
 command-send-desc: "&7- Envoyer ses points a un joueur."
-
+# Manage command /help messages
 command-admin-desc: "&7- admin."
-command-set: "&8&l- &a/pointz set <player> <nombre>  "
-command-add: "&8&l- &a/pointz add <player> <nombre>  "
-command-del: "&8&l- &a/pointz del <player> <nombre>  "
-
+command-set: "&8&l- &a/pointz set <player> <number>  "
+command-add: "&8&l- &a/pointz add <player> <number>  "
+command-del: "&8&l- &a/pointz del <player> <number>  "
+# pshop /help messages
 command-shop: "&8&l- &a/pshop  "
 command-shop-desc: "&7- Ouvre le shop IG."
+# pconverter /help messages
+command-converter: "&8&l- &a/pconverter  "
+command-converter-desc: "&7- Ouvre le convertisseur de point boutique."
+#
+# Requierment messages.
+#
+no-permission: "{prefix} &3Tu n'as pas la permission"
+no-register: "{prefix} Le joueur n'est pas inscrit sur le site"
+no-register-own: "{prefix} Tu n'es pas inscrit sur le site"
+not-connected: "{prefix} Le joueurs n'est pas co !"
+no-require-money: "{prefix} Tu n'as pas assez d'argent !"
+no-player: "{prefix} &cSeulement les joueurs InGame peuvent exécuter cette commande."
+#
+only-number: "{prefix} &cSeul les nombres sont acceptés"
+positive-number: "{prefix} &cIl faut un nombre supérieur à 0 !"
+syntax-error: "{prefix} Erreur de syntaxe"
+#
+# Send command messages.
+#
+send-old: "{prefix} Tu avais {1} points sur la boutique"
+send-new: "{prefix} Tu as maintenant {1} points sur la boutique"
+send-cible: "{prefix} {1} vient de te donner {2} points sur la boutique"
+#
+# Check command message.
+#
+check-command: "{prefix} Tu as {1} points sur la boutique"
+#
+# Manage commands messages.
+#
+command-set-own: "{prefix} Tu viens de mettre {1} points sur la boutique a {2} !"
+command-set-other: "{prefix} {1} vient de te mettre {2} points sur la boutique !"
 
-command-gui: "&8&l- &a/pconverter  "
-command-gui-desc: "&7- Ouvre le convertisseur de point boutique."
+command-add-own: "{prefix} Tu viens de donner {1} points sur la boutique a {2} !"
+command-add-other: "{prefix} {1} vient de te donner {2} points sur la boutique !"
 
-#Stop help
-no-permission: "&3Tu n'as pas la permission"
-no-register: "Le joueur n'est pas inscrit sur le site"
-no-register-own: "Tu n'es pas inscrit sur le site"
-not-connected: "Le joueurs n'est pas co !"
-
-no-require-money: "Tu n'as pas assez d'argent !"
-
-
-only-number: "Seul les nombres sont accept�s"
-
-#keep {0}, {1}, {2}
-check-command: "Tu as {1} points sur la boutique"
-
-command-set-own: "Tu viens de mettre {0} points sur la boutique a {1} !"
-command-set-other: "{0} vient de te mettre {1} points sur la boutique !"
-
-command-add-own: "Tu viens de donner {0} points sur la boutique a {1} !"
-command-add-other: "{0} vient de te donner {1} points sur la boutique !"
-
-command-del-own: "Tu viens de t'enlever {0} points sur la boutique a {1} !"
-command-del-other: "{0} vient de te t'enlever {1} points sur la boutique !"
-
-send-old: "Tu avais {1} points sur la boutique"
-send-new: "Tu as maintenant {1} points sur la boutique"
-send-cible: "{0} vient de te donner {1} points sur la boutique"
-
-#pgui gui success
-menu-gui-success-ig: "Tu viens de payer {1} points sur la boutique in game"
-menu-gui-success-web: "Tu as maintenant {1} points sur la boutique"
-
-#pshop gui success
-menu-shop-success-ig: "Tu viens de payer {1}$ et tu viens de recevoir ton achat !"
-menu-shop-success-web: "Tu viens de payer {1}points et tu viens de recevoir ton achat !"
+command-del-own: "{prefix} Tu viens d'enlever {1} points sur la boutique a {2} !"
+command-del-other: "{prefix} {1} vient de t'enlever {2} points sur la boutique !"
+#
+# pconverter, pshop successmessages.
+#
+menu-converter-success-ig: "{prefix} Tu viens de payer {1} points sur la boutique in game"
+menu-converter-success-web: "{prefix} Tu as maintenant {1} points sur la boutique"
+menu-shop-success-ig: "{prefix} Tu viens de payer {1}$ et tu viens de recevoir ton achat !"
+menu-shop-success-web: "{prefix} Tu viens de payer {1}points et tu viens de recevoir ton achat !"

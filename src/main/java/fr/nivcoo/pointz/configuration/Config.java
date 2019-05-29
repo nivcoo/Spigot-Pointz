@@ -64,8 +64,18 @@ public class Config {
 	 *            The path location where you would get the String.
 	 *
 	 */
-	public String getString(String path) {
+	public String getString(String path, String... lists) {
+
 		String name = fconfig.getString(path);
+		if (name != null) {
+			if (lists != null) {
+				for (int i = 0; i < lists.length; i++) {
+					name = name.replace("{" + i + "}", lists[i]).replace("{prefix}", lists[i]);
+
+				}
+			}
+		}
+
 		return name == null ? null : name.replace("&", "§");
 	}
 

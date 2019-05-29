@@ -1,5 +1,5 @@
 name: Pointz
-version: 0.0.1
+version: 0.0.2-SNAPSHOT
 author: nivcoo
 main: fr.nivcoo.pointz.Pointz
 commands:
@@ -8,7 +8,7 @@ commands:
   pshop:
     description: shop
   pconverter:
-    description: gui
+    description: converter
 permissions:
   pointz.command:
     default: op

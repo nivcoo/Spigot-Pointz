@@ -18,7 +18,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import fr.nivcoo.pointz.Pointz;
-import fr.nivcoo.pointz.commands.SendCommand;
+import fr.nivcoo.pointz.commands.Commands;
 import fr.nivcoo.pointz.configuration.Config;
 import fr.nivcoo.pointz.configuration.DataBase;
 import fr.nivcoo.pointz.constructor.Configurations;
@@ -30,7 +30,7 @@ import net.milkbowl.vault.economy.Economy;
 public class GuiShop implements Listener {
 
 	private Config message = Pointz.getMessages();
-	String PrefixPoint = message.getString("prefix");
+	String prefix = message.getString("prefix");
 	private DataBase bdd = Pointz.getBdd();
 
 	private Inventory invShop;
@@ -38,6 +38,7 @@ public class GuiShop implements Listener {
 	private Inventory invConfirm;
 	CreateItems createItems;
 
+	@SuppressWarnings("deprecation")
 	public GuiShop(Plugin p) {
 		int rowShop = ((Pointz.getItems.size() + 8) / 9) * 9;
 		int rowBuy = ((Pointz.getOffers.size() + 8) / 9) * 9;
@@ -60,7 +61,7 @@ public class GuiShop implements Listener {
 			if (items.getPriceIg() != 0)
 				lores.add("§7- Prix InGame : §c" + items.getPriceIg());
 
-			item = CreateItems.item(Material.getMaterial("" + items.getIcon()), items.getName(), lores);
+			item = CreateItems.item(Material.getMaterial(items.getIcon()), items.getName(), lores);
 			invShop.setItem(i, item);
 			i++;
 		}
@@ -79,7 +80,7 @@ public class GuiShop implements Listener {
 			if (items.getPriceIg() != 0)
 				lores.add("§7- Gain en jeux : §c" + items.getPriceIg());
 
-			item = CreateItems.item(Material.getMaterial("" + items.getIcon()), items.getName(), lores);
+			item = CreateItems.item(Material.getMaterial(items.getIcon()), items.getName(), lores);
 			invConverter.setItem(i, item);
 			i++;
 		}
@@ -136,13 +137,13 @@ public class GuiShop implements Listener {
 				double playerMoney = rsp.getProvider().getBalance(player);
 				if (playerMoney >= item.getPriceIg()) {
 					rsp.getProvider().withdrawPlayer(player, item.getPriceIg());
-					player.sendMessage(PrefixPoint
-							+ message.getString("menu-shop-success-ig").replace("{1}", "" + item.getPriceIg()));
-					SendCommand.sendCommand(player, item.getCmd());
+					player.sendMessage(
+							message.getString("menu-shop-success-ig", prefix, String.valueOf(item.getPriceIg())));
+					Commands.sendCommand(player, item.getCmd());
 					return;
 
 				} else {
-					player.sendMessage(PrefixPoint + message.getString("no-require-money"));
+					player.sendMessage(message.getString("no-require-money", prefix));
 					return;
 				}
 
@@ -162,15 +163,14 @@ public class GuiShop implements Listener {
 						 */
 						bdd.sendPreparedRequest("UPDATE", "users", "money", (int) removePlayerMoney, "pseudo",
 								playerName);
-						player.sendMessage(PrefixPoint
-								+ message.getString("menu-shop-success-web").replace("{1}", "" + item.getPrice()));
-						SendCommand.sendCommand(player, item.getCmd());
+						player.sendMessage(message.getString("menu-shop-success-web", prefix, String.valueOf(item.getPriceIg())));
+						Commands.sendCommand(player, item.getCmd());
 					} else {
-						player.sendMessage(PrefixPoint + message.getString("no-require-money"));
+						player.sendMessage(message.getString("no-require-money", prefix));
 						return;
 					}
 				} else {
-					player.sendMessage(PrefixPoint + message.getString("no-register-own"));
+					player.sendMessage(message.getString("no-register-own", prefix));
 				}
 				return;
 
@@ -212,18 +212,16 @@ public class GuiShop implements Listener {
 					 * " WHERE pseudo = '" + playerName + "';");
 					 */
 					bdd.sendPreparedRequest("UPDATE", "users", "money", (int) removePlayerMoney, "pseudo", playerName);
-					SendCommand.sendCommand(player, offer.getCmd());
-					player.sendMessage(PrefixPoint
-							+ message.getString("menu-gui-success-ig").replace("{1}", "" + offer.getPrice()));
-					player.sendMessage(PrefixPoint
-							+ message.getString("menu-gui-success-web").replace("{1}", "" + removePlayerMoney));
+					Commands.sendCommand(player, offer.getCmd());
+					player.sendMessage(message.getString("menu-converter-success-ig", prefix, String.valueOf(offer.getPrice())));
+					player.sendMessage(message.getString("menu-converter-success-web", prefix, String.valueOf(removePlayerMoney)));
 					return;
 				} else {
-					player.sendMessage(PrefixPoint + message.getString("no-require-money"));
+					player.sendMessage(message.getString("no-require-money", prefix));
 				}
 				return;
 			} else {
-				player.sendMessage(PrefixPoint + message.getString("no-register-own"));
+				player.sendMessage(message.getString("no-register-own", prefix));
 			}
 			return;
 		}
