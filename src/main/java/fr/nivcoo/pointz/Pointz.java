@@ -20,6 +20,7 @@ import fr.nivcoo.pointz.constructor.Items;
 import fr.nivcoo.pointz.constructor.Offers;
 import fr.nivcoo.pointz.gui.shop.GuiShop;
 import fr.nivcoo.pointz.placeholder.PlaceHolder;
+import fr.nivcoo.pointz.placeholder.PlaceHolderAPI;
 
 public class Pointz extends JavaPlugin implements Listener {
 	private static Config config = new Config(
@@ -114,6 +115,11 @@ public class Pointz extends JavaPlugin implements Listener {
 		getCommand("pconverter").setExecutor(new GuiCommands());
 		if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			PlaceholderAPI.registerPlaceholder(this, "pointz_get_money", new PlaceHolder(this));
+
+		}
+		
+		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+			new PlaceHolderAPI().register(); 
 
 		}
 		bdd.disconnection();
