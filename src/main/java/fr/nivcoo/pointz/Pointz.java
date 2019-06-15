@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import be.maximvdw.placeholderapi.PlaceholderAPI;
 import fr.nivcoo.pointz.commands.Commands;
 import fr.nivcoo.pointz.commands.GuiCommands;
 import fr.nivcoo.pointz.configuration.Config;
@@ -18,6 +19,7 @@ import fr.nivcoo.pointz.constructor.Configurations;
 import fr.nivcoo.pointz.constructor.Items;
 import fr.nivcoo.pointz.constructor.Offers;
 import fr.nivcoo.pointz.gui.shop.GuiShop;
+import fr.nivcoo.pointz.placeholder.PlaceHolder;
 
 public class Pointz extends JavaPlugin implements Listener {
 	private static Config config = new Config(
@@ -26,6 +28,7 @@ public class Pointz extends JavaPlugin implements Listener {
 			new File("plugins" + File.separator + "Pointz" + File.separator + "message.yml"));
 	private static DataBase bdd;
 	private File message;
+	private File configFile;
 	public static GuiShop guiShop;
 	public static List<Items> getItems;
 	public static List<Offers> getOffers;
@@ -39,6 +42,19 @@ public class Pointz extends JavaPlugin implements Listener {
 		ResultSet getlistItems = null;
 		ResultSet getlistOffers = null;
 		ResultSet getlistConfig = null;
+		message = new File(getDataFolder(), "message.yml");
+		if (!message.exists()) {
+			message.getParentFile().mkdirs();
+			saveResource("message.yml", false);
+		}
+		
+		configFile = new File(getDataFolder(), "config.yml");
+		if (!configFile.exists()) {
+			configFile.getParentFile().mkdirs();
+			saveResource("config.yml", false);
+		}
+
+		saveDefaultConfig();
 		Bukkit.getConsoleSender().sendMessage("§c===============§b==============");
 		Bukkit.getConsoleSender().sendMessage("§7Pointz §av" + this.getDescription().getVersion());
 		if (bdd.connected()) {
@@ -64,13 +80,6 @@ public class Pointz extends JavaPlugin implements Listener {
 		}
 
 		Bukkit.getConsoleSender().sendMessage("§c==============§b===============");
-		message = new File(getDataFolder(), "message.yml");
-		if (!message.exists()) {
-			message.getParentFile().mkdirs();
-			saveResource("message.yml", false);
-		}
-
-		saveDefaultConfig();
 
 		try {
 
@@ -103,6 +112,10 @@ public class Pointz extends JavaPlugin implements Listener {
 		getCommand("pointz").setExecutor(new Commands());
 		getCommand("pshop").setExecutor(new GuiCommands());
 		getCommand("pconverter").setExecutor(new GuiCommands());
+		if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
+			PlaceholderAPI.registerPlaceholder(this, "pointz_get_money", new PlaceHolder(this));
+
+		}
 		bdd.disconnection();
 	}
 

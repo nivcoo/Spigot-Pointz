@@ -22,6 +22,7 @@ public class Commands implements CommandExecutor {
 	private DataBase bdd = Pointz.getBdd();
 
 	public void help(CommandSender p) {
+		
 
 		if (p.hasPermission("pointz.command")) {
 			p.sendMessage(message.getString("command-title", prefix));
@@ -103,7 +104,7 @@ public class Commands implements CommandExecutor {
 														this.setPlayerMoney(player, getPlayer_money_after);
 														int getCible_money = 0;
 
-														getCible_money = this.getMoneyPlayer(cible);
+														getCible_money = Commands.getMoneyPlayer(cible);
 
 														int getCible_money_after = getCible_money + numberArg_2;
 														setPlayerMoney(cible, getCible_money_after);
@@ -277,7 +278,7 @@ public class Commands implements CommandExecutor {
 		return false;
 	}
 
-	private int getMoneyPlayer(Player player) throws SQLException {
+	public static int getMoneyPlayer(Player player) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = null;
 		ResultSet rs = null;

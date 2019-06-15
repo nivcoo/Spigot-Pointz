@@ -1,7 +1,8 @@
 name: Pointz
-version: 0.0.4
+version: 0.0.5
 author: nivcoo
 main: fr.nivcoo.pointz.Pointz
+softdepend: [MVdWPlaceholderAPI]
 commands:
   pointz:
     description: List of commands

@@ -155,11 +155,9 @@ public class GuiShop implements Listener {
 			} else if (e.getCurrentItem().getItemMeta().getDisplayName()
 					.equalsIgnoreCase(invConfirm.getItem(15).getItemMeta().getDisplayName())) {
 				try {
-
-					String playerName = player.getName();
 					String playerNameWebsite = getPseudoPlayer(player);
 
-					if (playerName.equalsIgnoreCase(playerNameWebsite)) {
+					if (player.getName().equalsIgnoreCase(playerNameWebsite)) {
 						int playerMoney = getMoneyPlayer(player);
 						if (playerMoney >= item.getPrice()) {
 							int removePlayerMoney = playerMoney - item.getPrice();

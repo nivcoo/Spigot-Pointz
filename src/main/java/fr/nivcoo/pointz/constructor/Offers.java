@@ -39,12 +39,12 @@ public class Offers {
 	}
 
 	public String getLores() {
-		return lores.replace("&", "�");
+		return lores.replace("&", "§");
 
 	}
 
 	public String getCmd() {
-		return cmd.replace("&", "�");
+		return cmd.replace("&", "§");
 
 	}
 }
