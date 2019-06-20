@@ -39,7 +39,7 @@ prefix: "&7[&c&lPointz&7]"
 command-title: "{prefix} &7Liste des commandes"
 # Check command /help messages
 command-check: "&8&l- &a/pointz check  "
-command-check-desc: "&7- Regarder le nombre de point boutique que l'on a."
+command-check-desc: "&7- Regarder le nombre de points boutique que l'on a."
 # Send command /help messages
 command-send: "&8&l- &a/pointz send <player> <number>  "
 command-send-desc: "&7- Envoyer ses points a un joueur."
@@ -60,7 +60,7 @@ command-converter-desc: "&7- Ouvre le convertisseur de point boutique."
 no-permission: "{prefix} &3Tu n'as pas la permission"
 no-register: "{prefix} Le joueur n'est pas inscrit sur le site"
 no-register-own: "{prefix} Tu n'es pas inscrit sur le site"
-not-connected: "{prefix} Le joueurs n'est pas co !"
+not-connected: "{prefix} Le joueur n'est pas connecté !"
 no-require-money: "{prefix} Tu n'as pas assez d'argent !"
 no-player: "{prefix} &cSeulement les joueurs InGame peuvent exécuter cette commande."
 #
