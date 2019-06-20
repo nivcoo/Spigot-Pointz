@@ -2,14 +2,14 @@
 
 ## Description
 Le plugin Pointz permet **grossièrement** de lier votre serveur au site (boutique).
-- Verifier premièrement que votre base de donnée est liée !
-- Ainsi que de verifier si le plugin **Pointz** est installé sur votre Site-Web
+- Vérifier premièrement que votre base de données est liée !
+- Ainsi que de vérifier si le plugin **Pointz** est installé sur votre Site-Web
 
 ## Plugins Nécessaires :relaxed:
 
-- Le plugin mineweb est disponible [ici](https://github.com/MineWeb/Plugin-Pointz)
-- Le plugin spigot est disponible [ici](https://www.spigotmc.org/resources/pointz-mineweb-cms.62187/)
-- Il suffit de lier la base de donnée au plugin et configurer ensuite via le panel admin.
+- Le plugin MineWeb est disponible [ici](https://github.com/MineWeb/Plugin-Pointz)
+- Le plugin Spigot est disponible [ici](https://www.spigotmc.org/resources/pointz-mineweb-cms.62187/)
+- Il suffit de lier la base de données au plugin et configurer ensuite via le panel admin.
 
 # Fichiers :smiley:
 
@@ -27,7 +27,7 @@ database:
     port: 3306
 ```
 
-### messages.yml
+### message.yml
 ```yml
 #
 # Messages fr_FR.
@@ -39,7 +39,7 @@ prefix: "&7[&c&lPointz&7]"
 command-title: "{prefix} &7Liste des commandes"
 # Check command /help messages
 command-check: "&8&l- &a/pointz check  "
-command-check-desc: "&7- Regarder le nombre de point boutique que l'on a."
+command-check-desc: "&7- Regarder le nombre de points boutique que l'on a."
 # Send command /help messages
 command-send: "&8&l- &a/pointz send <player> <number>  "
 command-send-desc: "&7- Envoyer ses points a un joueur."
@@ -60,7 +60,7 @@ command-converter-desc: "&7- Ouvre le convertisseur de point boutique."
 no-permission: "{prefix} &3Tu n'as pas la permission"
 no-register: "{prefix} Le joueur n'est pas inscrit sur le site"
 no-register-own: "{prefix} Tu n'es pas inscrit sur le site"
-not-connected: "{prefix} Le joueurs n'est pas co !"
+not-connected: "{prefix} Le joueur n'est pas connecté !"
 no-require-money: "{prefix} Tu n'as pas assez d'argent !"
 no-player: "{prefix} &cSeulement les joueurs InGame peuvent exécuter cette commande."
 #
