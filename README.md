@@ -27,7 +27,7 @@ database:
     port: 3306
 ```
 
-### messages.yml
+### message.yml
 ```yml
 #
 # Messages fr_FR.
