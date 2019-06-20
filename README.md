@@ -2,14 +2,14 @@
 
 ## Description
 Le plugin Pointz permet **grossièrement** de lier votre serveur au site (boutique).
-- Verifier premièrement que votre base de donnée est liée !
-- Ainsi que de verifier si le plugin **Pointz** est installé sur votre Site-Web
+- Vérifier premièrement que votre base de données est liée !
+- Ainsi que de vérifier si le plugin **Pointz** est installé sur votre Site-Web
 
 ## Plugins Nécessaires :relaxed:
 
-- Le plugin mineweb est disponible [ici](https://github.com/MineWeb/Plugin-Pointz)
-- Le plugin spigot est disponible [ici](https://www.spigotmc.org/resources/pointz-mineweb-cms.62187/)
-- Il suffit de lier la base de donnée au plugin et configurer ensuite via le panel admin.
+- Le plugin MineWeb est disponible [ici](https://github.com/MineWeb/Plugin-Pointz)
+- Le plugin Spigot est disponible [ici](https://www.spigotmc.org/resources/pointz-mineweb-cms.62187/)
+- Il suffit de lier la base de données au plugin et configurer ensuite via le panel admin.
 
 # Fichiers :smiley:
 
