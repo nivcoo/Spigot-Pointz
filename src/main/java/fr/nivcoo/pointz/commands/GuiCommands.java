@@ -9,7 +9,7 @@ import fr.nivcoo.pointz.Pointz;
 import fr.nivcoo.pointz.configuration.Config;
 
 public class GuiCommands implements CommandExecutor {
-	private Config message = Pointz.getMessages();
+	private Config message = Pointz.get().getMessages();
 	String prefix = message.getString("prefix");
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

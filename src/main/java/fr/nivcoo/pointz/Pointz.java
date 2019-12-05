@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import be.maximvdw.placeholderapi.PlaceholderAPI;
@@ -23,6 +24,7 @@ import fr.nivcoo.pointz.placeholder.PlaceHolder;
 import fr.nivcoo.pointz.placeholder.PlaceHolderAPI;
 
 public class Pointz extends JavaPlugin implements Listener {
+	private static Pointz INSTANCE;
 	private static Config config;
 	private static Config configMessage;
 	private static DataBase bdd;
@@ -33,6 +35,7 @@ public class Pointz extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable() {
+		INSTANCE = this;
 		config = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "config.yml"));
 		configMessage = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "message.yml"));
 		bdd = new DataBase(config.getString("database.host"), config.getString("database.database"),
@@ -131,16 +134,21 @@ public class Pointz extends JavaPlugin implements Listener {
 
 	}
 
-	public static Config getMessages() {
+	public Config getMessages() {
 		return configMessage;
 	}
 
-	public static Config getConfiguration() {
+	public Config getConfiguration() {
 		return config;
 	}
 
-	public static DataBase getBdd() {
+	public DataBase getBdd() {
 		return bdd;
+	}
+
+	
+	public static Pointz get() {
+		return INSTANCE;
 	}
 
 }

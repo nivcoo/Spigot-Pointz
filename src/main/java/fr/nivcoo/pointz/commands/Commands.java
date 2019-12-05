@@ -17,9 +17,9 @@ import fr.nivcoo.pointz.configuration.Config;
 import fr.nivcoo.pointz.configuration.DataBase;
 
 public class Commands implements CommandExecutor {
-	private Config message = Pointz.getMessages();
+	private Config message = Pointz.get().getMessages();
 	String prefix = message.getString("prefix");
-	private DataBase bdd = Pointz.getBdd();
+	private static DataBase bdd = Pointz.get().getBdd();
 
 	public void help(CommandSender p) {
 		
@@ -283,7 +283,7 @@ public class Commands implements CommandExecutor {
 		Connection c = null;
 		ResultSet rs = null;
 		try {
-			c = Pointz.getBdd().getConnection();
+			c = bdd.getConnection();
 			ps = c.prepareStatement("SELECT money FROM users WHERE pseudo = ?");
 
 			ps.setString(1, player.getName());

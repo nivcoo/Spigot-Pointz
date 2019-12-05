@@ -33,9 +33,9 @@ import net.milkbowl.vault.economy.Economy;
 
 public class GuiShop implements Listener {
 
-	private Config message = Pointz.getMessages();
+	private Config message = Pointz.get().getMessages();
 	String prefix = message.getString("prefix");
-	private DataBase bdd = Pointz.getBdd();
+	private DataBase bdd = Pointz.get().getBdd();
 
 	private Inventory invShop;
 	private Inventory invConverter;
