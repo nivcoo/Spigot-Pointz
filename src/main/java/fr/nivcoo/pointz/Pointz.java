@@ -23,13 +23,9 @@ import fr.nivcoo.pointz.placeholder.PlaceHolder;
 import fr.nivcoo.pointz.placeholder.PlaceHolderAPI;
 
 public class Pointz extends JavaPlugin implements Listener {
-	private static Config config = new Config(
-			new File("plugins" + File.separator + "Pointz" + File.separator + "config.yml"));
-	private static Config configMessage = new Config(
-			new File("plugins" + File.separator + "Pointz" + File.separator + "message.yml"));
+	private static Config config;
+	private static Config configMessage;
 	private static DataBase bdd;
-	private File message;
-	private File configFile;
 	public static GuiShop guiShop;
 	public static List<Items> getItems;
 	public static List<Offers> getOffers;
@@ -37,19 +33,21 @@ public class Pointz extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable() {
+		config = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "config.yml"));
+		configMessage = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "message.yml"));
 		bdd = new DataBase(config.getString("database.host"), config.getString("database.database"),
 				config.getString("database.username"), config.getString("database.password"));
 		bdd.connection();
 		ResultSet getlistItems = null;
 		ResultSet getlistOffers = null;
 		ResultSet getlistConfig = null;
-		message = new File(getDataFolder(), "message.yml");
+		File message = new File(getDataFolder(), "message.yml");
 		if (!message.exists()) {
 			message.getParentFile().mkdirs();
 			saveResource("message.yml", false);
 		}
-		
-		configFile = new File(getDataFolder(), "config.yml");
+
+		File configFile = new File(getDataFolder(), "config.yml");
 		if (!configFile.exists()) {
 			configFile.getParentFile().mkdirs();
 			saveResource("config.yml", false);
@@ -113,13 +111,15 @@ public class Pointz extends JavaPlugin implements Listener {
 		getCommand("pointz").setExecutor(new Commands());
 		getCommand("pshop").setExecutor(new GuiCommands());
 		getCommand("pconverter").setExecutor(new GuiCommands());
-		if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
+		if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")
+				&& config.getBoolean("placeholder.mvdwplaceholder-api")) {
 			PlaceholderAPI.registerPlaceholder(this, "pointz_get_money", new PlaceHolder(this));
 
 		}
-		
-		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			new PlaceHolderAPI().register(); 
+
+		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")
+				&& config.getBoolean("placeholder.placeholder-api")) {
+			new PlaceHolderAPI().register();
 
 		}
 		bdd.disconnection();
