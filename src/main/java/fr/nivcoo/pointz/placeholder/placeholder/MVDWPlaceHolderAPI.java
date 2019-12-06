@@ -10,7 +10,7 @@ import fr.nivcoo.pointz.Pointz;
 import fr.nivcoo.pointz.commands.Commands;
 
 public class MVDWPlaceHolderAPI implements PlaceholderReplacer {
-	
+
 	Pointz pointz;
 
 	public MVDWPlaceHolderAPI(Pointz pointz) {
@@ -31,7 +31,5 @@ public class MVDWPlaceHolderAPI implements PlaceholderReplacer {
 		}
 		return null;
 	}
-
-	
 
 }

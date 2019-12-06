@@ -43,21 +43,19 @@ public class ShopInventory implements InventoryProvider, Listener {
 		inv.fillRectangle(1, 3, 9, 1, space);
 		inv.fillRectangle(3, 6, 6, 1, separator);
 		inv.fillRectangle(1, 5, 9, 1, separator_2);
-		
+
 	}
 
 	@Override
 	public void update(Inventory inv) {
-		
+
 	}
 
 	@Override
 	public void onClose(InventoryCloseEvent e, Inventory inv) {
 		Player p = (Player) e.getPlayer();
 		p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, .4f, 1.7f);
-		
+
 	}
 
-	
-	
 }

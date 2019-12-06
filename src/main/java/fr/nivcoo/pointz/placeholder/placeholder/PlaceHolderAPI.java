@@ -27,11 +27,11 @@ public class PlaceHolderAPI extends PlaceholderExpansion {
 		// TODO Auto-generated method stub
 		return "0.0.1";
 	}
-	
+
 	@Override
-    public String onRequest(OfflinePlayer player, String identifier){
-  
-        if(identifier.equals("get_money")){
+	public String onRequest(OfflinePlayer player, String identifier) {
+
+		if (identifier.equals("get_money")) {
 			int money = 0;
 			try {
 				money = Commands.getMoneyPlayer((Player) player);
@@ -39,9 +39,9 @@ public class PlaceHolderAPI extends PlaceholderExpansion {
 				e.printStackTrace();
 			}
 			return String.valueOf(money);
-        }
+		}
 
-        return null;
-    }
+		return null;
+	}
 
 }

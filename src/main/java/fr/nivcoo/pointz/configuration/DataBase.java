@@ -26,7 +26,7 @@ public class DataBase {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void connection() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -44,12 +44,11 @@ public class DataBase {
 	public boolean connected() {
 		return this.conn != null;
 	}
-	
+
 	private void connectIfNot() {
 		if (!this.connected())
 			this.connection();
 	}
-	
 
 	public void disconnection() {
 		if (this.connected())
@@ -63,14 +62,14 @@ public class DataBase {
 	}
 
 	public ResultSet getResultSet(String request) {
-		
+
 		this.connectIfNot();
 
 		try {
 			Statement state = this.conn.createStatement();
 			return state.executeQuery(request);
 		} catch (SQLException e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 		return null;
 	}

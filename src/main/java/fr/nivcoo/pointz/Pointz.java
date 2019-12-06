@@ -143,7 +143,6 @@ public class Pointz extends JavaPlugin implements Listener {
 		return bdd;
 	}
 
-	
 	public static Pointz get() {
 		return INSTANCE;
 	}

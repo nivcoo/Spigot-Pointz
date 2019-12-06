@@ -22,7 +22,6 @@ public class Commands implements CommandExecutor {
 	private static DataBase bdd = Pointz.get().getBdd();
 
 	public void help(CommandSender p) {
-		
 
 		if (p.hasPermission("pointz.command")) {
 			p.sendMessage(message.getString("command-title", prefix));
@@ -324,7 +323,7 @@ public class Commands implements CommandExecutor {
 		return null;
 
 	}
-	
+
 	private void setPlayerMoney(Player player, int money) throws SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
