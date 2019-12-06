@@ -8,10 +8,8 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import be.maximvdw.placeholderapi.PlaceholderAPI;
 import fr.nivcoo.pointz.commands.Commands;
 import fr.nivcoo.pointz.commands.GuiCommands;
 import fr.nivcoo.pointz.configuration.Config;
@@ -20,8 +18,7 @@ import fr.nivcoo.pointz.constructor.Configurations;
 import fr.nivcoo.pointz.constructor.Items;
 import fr.nivcoo.pointz.constructor.Offers;
 import fr.nivcoo.pointz.gui.shop.GuiShop;
-import fr.nivcoo.pointz.placeholder.PlaceHolder;
-import fr.nivcoo.pointz.placeholder.PlaceHolderAPI;
+import fr.nivcoo.pointz.placeholder.PHManager;
 
 public class Pointz extends JavaPlugin implements Listener {
 	private static Pointz INSTANCE;
@@ -116,13 +113,13 @@ public class Pointz extends JavaPlugin implements Listener {
 		getCommand("pconverter").setExecutor(new GuiCommands());
 		if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")
 				&& config.getBoolean("placeholder.mvdwplaceholder-api")) {
-			PlaceholderAPI.registerPlaceholder(this, "pointz_get_money", new PlaceHolder(this));
+			PHManager.registerMVDW("pointz_get_money");
 
 		}
 
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")
 				&& config.getBoolean("placeholder.placeholder-api")) {
-			new PlaceHolderAPI().register();
+			PHManager.register();
 
 		}
 		bdd.disconnection();

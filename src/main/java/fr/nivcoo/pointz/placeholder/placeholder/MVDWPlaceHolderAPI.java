@@ -1,4 +1,4 @@
-package fr.nivcoo.pointz.placeholder;
+package fr.nivcoo.pointz.placeholder.placeholder;
 
 import java.sql.SQLException;
 
@@ -9,11 +9,11 @@ import be.maximvdw.placeholderapi.PlaceholderReplacer;
 import fr.nivcoo.pointz.Pointz;
 import fr.nivcoo.pointz.commands.Commands;
 
-public class PlaceHolder implements PlaceholderReplacer {
+public class MVDWPlaceHolderAPI implements PlaceholderReplacer {
 	
 	Pointz pointz;
 
-	public PlaceHolder(Pointz pointz) {
+	public MVDWPlaceHolderAPI(Pointz pointz) {
 		this.pointz = pointz;
 	}
 

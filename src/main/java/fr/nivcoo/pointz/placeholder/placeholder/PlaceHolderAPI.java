@@ -1,4 +1,4 @@
-package fr.nivcoo.pointz.placeholder;
+package fr.nivcoo.pointz.placeholder.placeholder;
 
 import java.sql.SQLException;
 
