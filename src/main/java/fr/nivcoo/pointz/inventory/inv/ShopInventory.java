@@ -26,6 +26,7 @@ import fr.nivcoo.pointz.inventory.Inventory;
 import fr.nivcoo.pointz.inventory.InventoryProvider;
 import fr.nivcoo.pointz.inventory.ItemBuilder;
 import fr.nivcoo.pointz.utils.Config;
+import fr.nivcoo.pointz.utils.ServerVersion;
 import net.milkbowl.vault.economy.Economy;
 
 public class ShopInventory implements InventoryProvider, Listener {
@@ -41,7 +42,7 @@ public class ShopInventory implements InventoryProvider, Listener {
 		messages = Pointz.get().getMessages();
 
 		empty = ClickableItem.of(ItemBuilder.of(Material.AIR).build());
-		glass = ClickableItem.of(ItemBuilder.of(Material.STAINED_GLASS_PANE, 1, (short) 7).build());
+		glass = ClickableItem.of(ItemBuilder.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 7).build());
 	}
 
 	@Override
@@ -62,7 +63,6 @@ public class ShopInventory implements InventoryProvider, Listener {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void update(Inventory inv) {
 		boolean update = (boolean) inv.get(UPDATE);
@@ -90,7 +90,7 @@ public class ShopInventory implements InventoryProvider, Listener {
 				List<String> confirmLore = Arrays.asList("§c- §7Cliquez pour confirmer l'achat !");
 				if (item.getPriceIg() > 0)
 					inv.fillRectangle(0, 3, inv.getRows(),
-							ClickableItem.of(ItemBuilder.of(Material.STAINED_GLASS_PANE, 1, (short) 14)
+							ClickableItem.of(ItemBuilder.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14)
 									.name(ChatColor.GREEN + "§aPrix en jeux | Confirmation").lore(confirmLore).build(),
 									confirm -> {
 										Player p = (Player) confirm.getWhoClicked();
@@ -114,7 +114,7 @@ public class ShopInventory implements InventoryProvider, Listener {
 									}));
 				inv.fillRectangle(6, 3, inv.getRows(), 
 						ClickableItem.of(
-								ItemBuilder.of(Material.STAINED_GLASS_PANE, 1, (short) 14)
+								ItemBuilder.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14)
 										.name(ChatColor.GREEN + "§aPrix | Confirmation").lore(confirmLore).build(),
 								confirm -> {
 									try {

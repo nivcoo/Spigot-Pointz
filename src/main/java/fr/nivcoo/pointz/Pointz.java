@@ -95,7 +95,7 @@ public class Pointz extends JavaPlugin implements Listener {
 						.getResultSet("SELECT * FROM shop__items WHERE id=" + getlistItems.getInt("item_id"));
 				while (getAllItems.next()) {
 					getItems.add(new Items(getAllItems.getString("name"), getAllItems.getInt("price"),
-							getlistItems.getInt("price_ig"), getlistItems.getInt("icon"),
+							getlistItems.getInt("price_ig"), getlistItems.getString("icon"),
 							getAllItems.getString("commands")));
 				}
 			}

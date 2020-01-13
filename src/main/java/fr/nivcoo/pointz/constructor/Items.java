@@ -5,10 +5,10 @@ public class Items {
 	private String name;
 	private int price;
 	private int priceIg;
-	private int icon;
+	private String icon;
 	private String cmd;
 
-	public Items(String name, int price, int priceIg, int icon, String cmd) {
+	public Items(String name, int price, int priceIg, String icon, String cmd) {
 		this.name = name;
 		this.price = price;
 		this.priceIg = priceIg;
@@ -31,7 +31,7 @@ public class Items {
 
 	}
 
-	public int getIcon() {
+	public String getIcon() {
 		return icon;
 
 	}

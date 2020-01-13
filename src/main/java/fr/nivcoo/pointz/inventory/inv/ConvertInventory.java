@@ -26,6 +26,7 @@ import fr.nivcoo.pointz.inventory.Inventory;
 import fr.nivcoo.pointz.inventory.InventoryProvider;
 import fr.nivcoo.pointz.inventory.ItemBuilder;
 import fr.nivcoo.pointz.utils.Config;
+import fr.nivcoo.pointz.utils.ServerVersion;
 import net.milkbowl.vault.economy.Economy;
 
 public class ConvertInventory implements InventoryProvider, Listener {
@@ -41,7 +42,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
 		messages = Pointz.get().getMessages();
 
 		empty = ClickableItem.of(ItemBuilder.of(Material.AIR).build());
-		glass = ClickableItem.of(ItemBuilder.of(Material.STAINED_GLASS_PANE, 1, (short) 7).build());
+		glass = ClickableItem.of(ItemBuilder.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 7).build());
 	}
 
 	@Override
@@ -96,7 +97,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
 									.name(ChatColor.RED + offer.getName()).lore(lores).build()));
 				List<String> confirmLore = Arrays.asList("§c- §7Cliquez pour confirmer l'achat !");
 				ClickableItem confirmation = ClickableItem.of(
-						ItemBuilder.of(Material.STAINED_GLASS_PANE, 1, (short) 14)
+						ItemBuilder.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14)
 								.name(ChatColor.GREEN + "§aConvertir | Confirmation").lore(confirmLore).build(),
 						confirm -> {
 							try {

@@ -17,6 +17,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
+import fr.nivcoo.pointz.utils.ServerVersion;
+
 public class ItemBuilder {
 	private Material m;
 	private int count;
@@ -59,13 +61,14 @@ public class ItemBuilder {
 		return this;
 	}
 
+	@SuppressWarnings("deprecation")
 	public ItemStack build() {
-		ItemStack is = new ItemStack(m, count, data);
+		ItemStack is = new ItemStack(m, count, (short) data);
 		ItemMeta im = is.hasItemMeta() ? is.getItemMeta() : Bukkit.getItemFactory().getItemMeta(m);
 		if (im != null) {
 			im.setDisplayName(name);
 			im.setLore(lores);
-			if (m == Material.SKULL_ITEM && texture != null && !"".equalsIgnoreCase(texture.trim())) {
+			if (m == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM")) && texture != null && !"".equalsIgnoreCase(texture.trim())) {
 				SkullMeta headMeta = (SkullMeta) im;
 				GameProfile profile = new GameProfile(UUID.randomUUID(), null);
 
