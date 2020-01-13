@@ -25,9 +25,14 @@ database:
     database: "mineweb"
     #default = 3306
     port: 3306
+    
+placeholder:
+    #if plugin is load, if not, there options are useless
+    placeholder-api: true
+    mvdwplaceholder-api: true
 ```
 
-### message.yml
+### messages.yml
 ```yml
 #
 # Messages fr_FR.
