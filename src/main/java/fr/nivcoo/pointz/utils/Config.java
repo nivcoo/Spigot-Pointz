@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import fr.nivcoo.pointz.Pointz;
+
 public class Config {
 	private File fichierConfig;
 	private FileConfiguration fconfig;
@@ -22,6 +24,7 @@ public class Config {
 	public Config(File file) {
 		if (!file.exists()) {
 			file.getParentFile().mkdirs();
+			Pointz.get().saveRessources(file.getName());
 		}
 		this.fichierConfig = file;
 		loadConfig();

@@ -18,9 +18,7 @@ public class GuiCommands implements CommandExecutor {
 			if (cmd.getName().equalsIgnoreCase("pshop")) {
 
 				if (p.hasPermission("pointz.shop")) {
-					Pointz.get().getInventoryManager().openInventory(Pointz.get().getInventoryListing().getShopInventory(), p, i -> {
-						i.put(Pointz.get().getInventoryListing().getShopInventory().PAGE, 1);
-					});
+					Pointz.get().getInventoryManager().openInventory(Pointz.get().getInventoryListing().getShopInventory(), p);
 				} else {
 					p.sendMessage(message.getString("no-permission", prefix));
 				}
@@ -30,6 +28,7 @@ public class GuiCommands implements CommandExecutor {
 			if (cmd.getName().equalsIgnoreCase("pconverter")) {
 				if (p.hasPermission("pointz.converter")) {
 					//Pointz.guiShop.show(p.getPlayer(), 1);
+					Pointz.get().getInventoryManager().openInventory(Pointz.get().getInventoryListing().getConvertInventory(), p);
 				} else {
 					p.sendMessage(message.getString("no-permission", prefix));
 				}

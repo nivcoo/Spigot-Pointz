@@ -38,9 +38,7 @@ public class Pointz extends JavaPlugin implements Listener {
 	public void onEnable() {
 		INSTANCE = this;
 		config = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "config.yml"));
-		saveResource("config.yml", false);
 		configMessage = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "messages.yml"));
-		saveResource("messages.yml", false);
 		bdd = new DataBase(config.getString("database.host"), config.getString("database.database"),
 				config.getString("database.username"), config.getString("database.password"));
 		prefix = configMessage.getString("prefix");
@@ -167,6 +165,11 @@ public class Pointz extends JavaPlugin implements Listener {
 
 	public String getPrefix() {
 		return prefix;
+	}
+
+	public void saveRessources(String name) {
+		saveResource(name, false);
+		
 	}
 
 }

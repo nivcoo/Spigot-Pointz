@@ -37,6 +37,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
 	private ClickableItem glass;
 	private Config messages;
 	private String prefix = Pointz.get().getPrefix();
+	private Material icon;
 
 	public ConvertInventory() {
 		messages = Pointz.get().getMessages();
@@ -82,18 +83,23 @@ public class ConvertInventory implements InventoryProvider, Listener {
 
 			lores.add("§7- Gain boutique : §c" + offer.getPrice());
 			lores.add("§7- Prix en jeux : §c" + offer.getPriceIg());
+			icon = Material.getMaterial(offer.getIcon().toUpperCase());
+			if(icon == null) {
+				icon = Material.DIRT;
+				lores.add("§cIcon de l'article invalide !");
+			}
 
-			ItemStack itemStack = ItemBuilder.of(Material.getMaterial(offer.getIcon()), 1)
+			ItemStack itemStack = ItemBuilder.of(icon, 1)
 					.name(ChatColor.RED + offer.getName()).lore(lores).build();
 
 			inv.set(i, ClickableItem.of(itemStack, e -> {
 				inv.fill(glass);
 				lores.add("§cCliquez à droite ou à gauche pour confirmer");
-				inv.set(5, inv.getRows() / 2, ClickableItem.of(ItemBuilder.of(Material.getMaterial(offer.getIcon()), 1)
+				inv.set(5, inv.getRows() / 2, ClickableItem.of(ItemBuilder.of(icon, 1)
 						.name(ChatColor.RED + offer.getName()).lore(lores).build()));
 				if (inv.getRows() % 2 == 0)
 					inv.set(5, inv.getRows() / 2 + 1,
-							ClickableItem.of(ItemBuilder.of(Material.getMaterial(offer.getIcon()), 1)
+							ClickableItem.of(ItemBuilder.of(icon, 1)
 									.name(ChatColor.RED + offer.getName()).lore(lores).build()));
 				List<String> confirmLore = Arrays.asList("§c- §7Cliquez pour confirmer l'achat !");
 				ClickableItem confirmation = ClickableItem.of(

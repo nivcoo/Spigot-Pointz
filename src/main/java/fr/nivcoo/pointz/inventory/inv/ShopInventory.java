@@ -37,6 +37,7 @@ public class ShopInventory implements InventoryProvider, Listener {
 	private ClickableItem glass;
 	private Config messages;
 	private String prefix = Pointz.get().getPrefix();
+	private Material icon;
 
 	public ShopInventory() {
 		messages = Pointz.get().getMessages();
@@ -76,16 +77,22 @@ public class ShopInventory implements InventoryProvider, Listener {
 			lores.add("§7- Prix : §c" + item.getPrice());
 			if (item.getPriceIg() != 0)
 				lores.add("§7- Prix InGame : §c" + item.getPriceIg());
-			ItemStack itemStack = ItemBuilder.of(Material.getMaterial(item.getIcon()), 1)
+			icon = Material.getMaterial(item.getIcon().toUpperCase());
+			if(icon == null) {
+				icon = Material.DIRT;
+				lores.add("§cIcon de l'article invalide !");
+			}
+			ItemStack itemStack = ItemBuilder.of(icon, 1)
 					.name(ChatColor.RED + item.getName()).lore(lores).build();
 
 			inv.set(i, ClickableItem.of(itemStack, e -> {
+				
 				inv.fill(glass);
 				lores.add("§cCliquez à droite ou à gauche pour confirmer");
-				inv.set(5, inv.getRows()/2, ClickableItem.of(ItemBuilder.of(Material.getMaterial(item.getIcon()), 1)
+				inv.set(5, inv.getRows()/2, ClickableItem.of(ItemBuilder.of(icon, 1)
 						.name(ChatColor.RED + item.getName()).lore(lores).build()));
 				if(inv.getRows() % 2 == 0)
-					inv.set(5, inv.getRows()/2+1, ClickableItem.of(ItemBuilder.of(Material.getMaterial(item.getIcon()), 1)
+					inv.set(5, inv.getRows()/2+1, ClickableItem.of(ItemBuilder.of(icon, 1)
 							.name(ChatColor.RED + item.getName()).lore(lores).build()));
 				List<String> confirmLore = Arrays.asList("§c- §7Cliquez pour confirmer l'achat !");
 				if (item.getPriceIg() > 0)

@@ -3,6 +3,7 @@ version: 2.0.0
 author: nivcoo
 main: fr.nivcoo.pointz.Pointz
 softdepend: [MVdWPlaceholderAPI, PlaceholderAPI]
+api-version: 1.13
 commands:
   pointz:
     description: List of commands
