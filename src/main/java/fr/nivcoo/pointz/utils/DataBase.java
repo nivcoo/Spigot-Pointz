@@ -1,4 +1,4 @@
-package fr.nivcoo.pointz.configuration;
+package fr.nivcoo.pointz.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,4 +1,4 @@
-package fr.nivcoo.pointz.configuration;
+package fr.nivcoo.pointz.utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +20,9 @@ public class Config {
 	 *
 	 */
 	public Config(File file) {
+		if (!file.exists()) {
+			file.getParentFile().mkdirs();
+		}
 		this.fichierConfig = file;
 		loadConfig();
 	}

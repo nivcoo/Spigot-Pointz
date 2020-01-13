@@ -3,13 +3,13 @@ package fr.nivcoo.pointz.constructor;
 public class Offers {
 
 	private String name;
-	private int icon;
+	private String icon;
 	private int price;
 	private int price_ig;
 	private String lores;
 	private String cmd;
 
-	public Offers(String name, int icon, int price, int price_ig, String lores, String cmd) {
+	public Offers(String name, String icon, int price, int price_ig, String lores, String cmd) {
 		this.name = name;
 		this.icon = icon;
 		this.price = price;
@@ -23,7 +23,7 @@ public class Offers {
 
 	}
 
-	public int getIcon() {
+	public String getIcon() {
 		return icon;
 
 	}

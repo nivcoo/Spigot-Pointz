@@ -13,8 +13,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import fr.nivcoo.pointz.Pointz;
-import fr.nivcoo.pointz.configuration.Config;
-import fr.nivcoo.pointz.configuration.DataBase;
+import fr.nivcoo.pointz.utils.Config;
+import fr.nivcoo.pointz.utils.DataBase;
 
 public class Commands implements CommandExecutor {
 	private Config message = Pointz.get().getMessages();

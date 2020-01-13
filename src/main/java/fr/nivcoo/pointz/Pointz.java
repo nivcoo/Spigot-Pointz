@@ -12,46 +12,42 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.nivcoo.pointz.commands.Commands;
 import fr.nivcoo.pointz.commands.GuiCommands;
-import fr.nivcoo.pointz.configuration.Config;
-import fr.nivcoo.pointz.configuration.DataBase;
 import fr.nivcoo.pointz.constructor.Configurations;
 import fr.nivcoo.pointz.constructor.Items;
 import fr.nivcoo.pointz.constructor.Offers;
-import fr.nivcoo.pointz.gui.shop.GuiShop;
+import fr.nivcoo.pointz.inventory.InventoryListing;
+import fr.nivcoo.pointz.inventory.InventoryManager;
 import fr.nivcoo.pointz.placeholder.PHManager;
+import fr.nivcoo.pointz.utils.Config;
+import fr.nivcoo.pointz.utils.DataBase;
 
 public class Pointz extends JavaPlugin implements Listener {
 	private static Pointz INSTANCE;
 	private static Config config;
 	private static Config configMessage;
 	private static DataBase bdd;
-	public static GuiShop guiShop;
-	public static List<Items> getItems;
-	public static List<Offers> getOffers;
-	public static List<Configurations> getConfig;
+	//public static GuiShop guiShop;
+	public List<Items> getItems;
+	public List<Offers> getOffers;
+	public List<Configurations> getConfig;
+	private InventoryManager inventoryManager;
+	private InventoryListing inventoryListing;
+	private String prefix;
 
 	@Override
 	public void onEnable() {
 		INSTANCE = this;
 		config = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "config.yml"));
-		configMessage = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "message.yml"));
+		saveResource("config.yml", false);
+		configMessage = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "messages.yml"));
+		saveResource("messages.yml", false);
 		bdd = new DataBase(config.getString("database.host"), config.getString("database.database"),
 				config.getString("database.username"), config.getString("database.password"));
+		prefix = configMessage.getString("prefix");
 		bdd.connection();
 		ResultSet getlistItems = null;
 		ResultSet getlistOffers = null;
 		ResultSet getlistConfig = null;
-		File message = new File(getDataFolder(), "message.yml");
-		if (!message.exists()) {
-			message.getParentFile().mkdirs();
-			saveResource("message.yml", false);
-		}
-
-		File configFile = new File(getDataFolder(), "config.yml");
-		if (!configFile.exists()) {
-			configFile.getParentFile().mkdirs();
-			saveResource("config.yml", false);
-		}
 
 		saveDefaultConfig();
 		Bukkit.getConsoleSender().sendMessage("§c===============§b==============");
@@ -90,7 +86,7 @@ public class Pointz extends JavaPlugin implements Listener {
 						new Configurations(getlistConfig.getString("name_shop"), getlistConfig.getString("name_gui")));
 			}
 			while (getlistOffers.next()) {
-				getOffers.add(new Offers(getlistOffers.getString("name"), getlistOffers.getInt("icon"),
+				getOffers.add(new Offers(getlistOffers.getString("name"), getlistOffers.getString("icon"),
 						getlistOffers.getInt("price"), getlistOffers.getInt("price_ig"),
 						getlistOffers.getString("lores"), getlistOffers.getString("commands")));
 			}
@@ -107,7 +103,7 @@ public class Pointz extends JavaPlugin implements Listener {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		guiShop = new GuiShop(this);
+		//guiShop = new GuiShop(this);
 		getCommand("pointz").setExecutor(new Commands());
 		getCommand("pshop").setExecutor(new GuiCommands());
 		getCommand("pconverter").setExecutor(new GuiCommands());
@@ -123,6 +119,10 @@ public class Pointz extends JavaPlugin implements Listener {
 
 		}
 		bdd.disconnection();
+		
+		inventoryManager = new InventoryManager();
+		inventoryManager.init();
+		inventoryListing = new InventoryListing();
 	}
 
 	@Override
@@ -145,6 +145,28 @@ public class Pointz extends JavaPlugin implements Listener {
 
 	public static Pointz get() {
 		return INSTANCE;
+	}
+	
+	
+	public List<Items> getItems() {
+		return getItems;
+	}
+	
+	public List<Offers> getOffers() {
+		return getOffers;
+	}
+	
+	
+	public InventoryManager getInventoryManager() {
+		return inventoryManager;
+	}
+	
+	public InventoryListing getInventoryListing() {
+		return inventoryListing;
+	}
+
+	public String getPrefix() {
+		return prefix;
 	}
 
 }
