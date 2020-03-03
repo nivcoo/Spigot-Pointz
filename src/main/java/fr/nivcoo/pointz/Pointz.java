@@ -17,7 +17,8 @@ import fr.nivcoo.pointz.constructor.Items;
 import fr.nivcoo.pointz.constructor.Offers;
 import fr.nivcoo.pointz.inventory.InventoryListing;
 import fr.nivcoo.pointz.inventory.InventoryManager;
-import fr.nivcoo.pointz.placeholder.PHManager;
+import fr.nivcoo.pointz.placeholder.RegisterMVDWPAPI;
+import fr.nivcoo.pointz.placeholder.RegisterPAPI;
 import fr.nivcoo.pointz.utils.Config;
 import fr.nivcoo.pointz.utils.DataBase;
 
@@ -26,7 +27,7 @@ public class Pointz extends JavaPlugin implements Listener {
 	private static Config config;
 	private static Config configMessage;
 	private static DataBase bdd;
-	//public static GuiShop guiShop;
+	// public static GuiShop guiShop;
 	public List<Items> getItems;
 	public List<Offers> getOffers;
 	public List<Configurations> getConfig;
@@ -40,7 +41,8 @@ public class Pointz extends JavaPlugin implements Listener {
 		config = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "config.yml"));
 		configMessage = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "messages.yml"));
 		bdd = new DataBase(config.getString("database.host"), config.getString("database.database"),
-				config.getString("database.username"), config.getString("database.password"), config.getString("database.port"));
+				config.getString("database.username"), config.getString("database.password"),
+				config.getString("database.port"));
 		prefix = configMessage.getString("prefix");
 		bdd.connection();
 		ResultSet getlistItems = null;
@@ -101,23 +103,23 @@ public class Pointz extends JavaPlugin implements Listener {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		//guiShop = new GuiShop(this);
+		// guiShop = new GuiShop(this);
 		getCommand("pointz").setExecutor(new Commands());
 		getCommand("pshop").setExecutor(new GuiCommands());
 		getCommand("pconverter").setExecutor(new GuiCommands());
 		if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")
 				&& config.getBoolean("placeholder.mvdwplaceholder-api")) {
-			PHManager.registerMVDW("pointz_get_money");
+			new RegisterMVDWPAPI("pointz_get_money", this);
 
 		}
 
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")
 				&& config.getBoolean("placeholder.placeholder-api")) {
-			PHManager.register();
+			new RegisterPAPI();
 
 		}
 		bdd.disconnection();
-		
+
 		inventoryManager = new InventoryManager();
 		inventoryManager.init();
 		inventoryListing = new InventoryListing();
@@ -144,21 +146,19 @@ public class Pointz extends JavaPlugin implements Listener {
 	public static Pointz get() {
 		return INSTANCE;
 	}
-	
-	
+
 	public List<Items> getItems() {
 		return getItems;
 	}
-	
+
 	public List<Offers> getOffers() {
 		return getOffers;
 	}
-	
-	
+
 	public InventoryManager getInventoryManager() {
 		return inventoryManager;
 	}
-	
+
 	public InventoryListing getInventoryListing() {
 		return inventoryListing;
 	}
@@ -169,7 +169,7 @@ public class Pointz extends JavaPlugin implements Listener {
 
 	public void saveRessources(String name) {
 		saveResource(name, false);
-		
+
 	}
 
 }
