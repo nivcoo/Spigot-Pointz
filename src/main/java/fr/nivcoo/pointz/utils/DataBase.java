@@ -1,45 +1,34 @@
 package fr.nivcoo.pointz.utils;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 public class DataBase {
-	private String host;
-	private String name;
-	private String user;
-	private String pass;
-	private String port;
-	private String url;
 	private Connection conn;
+	private HikariDataSource hikari;
+	
 
 	public DataBase(String h, String n, String u, String pass, String p) {
-		this.host = h;
-		this.name = n;
-		this.user = u;
-		this.pass = pass;
-		this.port = p;
-		this.url = "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.name;
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		
+		hikari = new HikariDataSource();
+        hikari.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+        hikari.addDataSourceProperty("serverName", h);
+        hikari.addDataSourceProperty("port", p);
+        hikari.addDataSourceProperty("databaseName", n);
+        hikari.addDataSourceProperty("user", u);
+        hikari.addDataSourceProperty("password", pass);
 	}
 
 	public void connection() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
 
 		try {
-			this.conn = DriverManager.getConnection(this.url, this.user, this.pass);
-
+			this.conn = hikari.getConnection();
 		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -58,8 +47,9 @@ public class DataBase {
 	}
 
 	public Connection getConnection() throws SQLException {
+		return hikari.getConnection();
 
-		return DriverManager.getConnection(this.url, this.user, this.pass);
+		//return DriverManager.getConnection(this.url, this.user, this.pass);
 
 	}
 
