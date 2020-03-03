@@ -11,15 +11,17 @@ public class DataBase {
 	private String name;
 	private String user;
 	private String pass;
+	private String port;
 	private String url;
 	private Connection conn;
 
-	public DataBase(String h, String n, String u, String p) {
+	public DataBase(String h, String n, String u, String pass, String p) {
 		this.host = h;
 		this.name = n;
 		this.user = u;
-		this.pass = p;
-		this.url = "jdbc:mysql://" + this.host + "/" + this.name;
+		this.pass = pass;
+		this.port = p;
+		this.url = "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.name;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {

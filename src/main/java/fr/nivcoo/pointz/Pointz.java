@@ -40,7 +40,7 @@ public class Pointz extends JavaPlugin implements Listener {
 		config = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "config.yml"));
 		configMessage = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "messages.yml"));
 		bdd = new DataBase(config.getString("database.host"), config.getString("database.database"),
-				config.getString("database.username"), config.getString("database.password"));
+				config.getString("database.username"), config.getString("database.password"), config.getString("database.port"));
 		prefix = configMessage.getString("prefix");
 		bdd.connection();
 		ResultSet getlistItems = null;
