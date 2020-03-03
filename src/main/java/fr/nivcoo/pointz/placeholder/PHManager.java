@@ -1,6 +1,5 @@
 package fr.nivcoo.pointz.placeholder;
 
-import be.maximvdw.placeholderapi.PlaceholderAPI;
 import fr.nivcoo.pointz.Pointz;
 
 public class PHManager {
@@ -9,7 +8,7 @@ public class PHManager {
 
 	public static void registerMVDW(String path) {
 
-		PlaceholderAPI.registerPlaceholder(pointz, path, new fr.nivcoo.pointz.placeholder.placeholder.MVDWPlaceHolderAPI(pointz));
+		be.maximvdw.placeholderapi.PlaceholderAPI.registerPlaceholder(pointz, path, new fr.nivcoo.pointz.placeholder.placeholder.MVDWPlaceHolderAPI(pointz));
 
 	}
 
