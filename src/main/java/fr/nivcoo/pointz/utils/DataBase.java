@@ -10,17 +10,16 @@ import com.zaxxer.hikari.HikariDataSource;
 public class DataBase {
 	private Connection conn;
 	private HikariDataSource hikari;
-	
 
 	public DataBase(String h, String n, String u, String pass, String p) {
-		
+
 		hikari = new HikariDataSource();
-        hikari.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
-        hikari.addDataSourceProperty("serverName", h);
-        hikari.addDataSourceProperty("port", p);
-        hikari.addDataSourceProperty("databaseName", n);
-        hikari.addDataSourceProperty("user", u);
-        hikari.addDataSourceProperty("password", pass);
+		hikari.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+		hikari.addDataSourceProperty("serverName", h);
+		hikari.addDataSourceProperty("port", p);
+		hikari.addDataSourceProperty("databaseName", n);
+		hikari.addDataSourceProperty("user", u);
+		hikari.addDataSourceProperty("password", pass);
 	}
 
 	public void connection() {
@@ -49,7 +48,7 @@ public class DataBase {
 	public Connection getConnection() throws SQLException {
 		return hikari.getConnection();
 
-		//return DriverManager.getConnection(this.url, this.user, this.pass);
+		// return DriverManager.getConnection(this.url, this.user, this.pass);
 
 	}
 

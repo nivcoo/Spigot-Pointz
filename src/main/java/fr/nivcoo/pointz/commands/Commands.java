@@ -93,7 +93,7 @@ public class Commands implements CommandExecutor {
 
 										if (playerCible_web != null && playerCible_web.equalsIgnoreCase(args[1])) {
 											String player_web = this.getPseudoPlayer(player);
-											if (player_web.equalsIgnoreCase(playerName)) {
+											if (playerName.equalsIgnoreCase(player_web)) {
 												try {
 													int getPlayer_money = getMoneyPlayer(player);
 
@@ -176,7 +176,7 @@ public class Commands implements CommandExecutor {
 								try {
 									String player_web = getPseudoPlayer(cible);
 
-									if (player_web.equalsIgnoreCase(args[1])) {
+									if (args[1].equalsIgnoreCase(player_web)) {
 										setPlayerMoney(cible, numberArg_2);
 										if (sender != cible)
 											sender.sendMessage(message.getString("command-set-own", prefix,
@@ -203,7 +203,7 @@ public class Commands implements CommandExecutor {
 								try {
 									String player_web = getPseudoPlayer(cible);
 
-									if (player_web.equalsIgnoreCase(args[1])) {
+									if (args[1].equalsIgnoreCase(player_web)) {
 
 										int playerMoney = getMoneyPlayer(cible);
 
@@ -236,7 +236,7 @@ public class Commands implements CommandExecutor {
 							try {
 								String player_web = getPseudoPlayer(cible);
 
-								if (player_web.equalsIgnoreCase(args[1])) {
+								if (args[1].equalsIgnoreCase(player_web)) {
 
 									int playerMoney = getMoneyPlayer(cible);
 
