@@ -15,7 +15,7 @@ import fr.nivcoo.pointz.commands.GuiCommands;
 import fr.nivcoo.pointz.constructor.Configurations;
 import fr.nivcoo.pointz.constructor.Items;
 import fr.nivcoo.pointz.constructor.Offers;
-import fr.nivcoo.pointz.inventory.InventoryListing;
+import fr.nivcoo.pointz.inventory.Inventories;
 import fr.nivcoo.pointz.inventory.InventoryManager;
 import fr.nivcoo.pointz.placeholder.RegisterMVDWPAPI;
 import fr.nivcoo.pointz.placeholder.RegisterPAPI;
@@ -32,7 +32,7 @@ public class Pointz extends JavaPlugin implements Listener {
 	public List<Offers> getOffers;
 	public List<Configurations> getConfig;
 	private InventoryManager inventoryManager;
-	private InventoryListing inventoryListing;
+	private Inventories inventories;
 	private String prefix;
 
 	@Override
@@ -108,13 +108,13 @@ public class Pointz extends JavaPlugin implements Listener {
 		getCommand("pshop").setExecutor(new GuiCommands());
 		getCommand("pconverter").setExecutor(new GuiCommands());
 		if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")
-				&& config.getBoolean("placeholder.mvdwplaceholder-api")) {
+				&& config.getBoolean("hooks.mvdwplaceholder-api")) {
 			new RegisterMVDWPAPI("pointz_get_money", this);
 
 		}
 
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")
-				&& config.getBoolean("placeholder.placeholder-api")) {
+				&& config.getBoolean("hooks.placeholder-api")) {
 			new RegisterPAPI();
 
 		}
@@ -122,12 +122,13 @@ public class Pointz extends JavaPlugin implements Listener {
 
 		inventoryManager = new InventoryManager();
 		inventoryManager.init();
-		inventoryListing = new InventoryListing();
+		inventories = new Inventories();
 	}
 
 	@Override
 	public void onDisable() {
 		bdd.disconnection();
+		inventoryManager.closeAllInventories();
 
 	}
 
@@ -159,8 +160,8 @@ public class Pointz extends JavaPlugin implements Listener {
 		return inventoryManager;
 	}
 
-	public InventoryListing getInventoryListing() {
-		return inventoryListing;
+	public Inventories getInventories() {
+		return inventories;
 	}
 
 	public String getPrefix() {

@@ -3,13 +3,13 @@ package fr.nivcoo.pointz.inventory;
 import fr.nivcoo.pointz.inventory.inv.ConvertInventory;
 import fr.nivcoo.pointz.inventory.inv.ShopInventory;
 
-public class InventoryListing {
+public class Inventories {
 
 
 	private ShopInventory shopInventory;
 	private ConvertInventory convertInventory;
 
-	public InventoryListing() {
+	public Inventories() {
 		shopInventory = new ShopInventory();
 		convertInventory = new ConvertInventory();
 	}

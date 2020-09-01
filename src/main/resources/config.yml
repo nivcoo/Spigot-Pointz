@@ -9,7 +9,7 @@ database:
     #default = 3306
     port: 3306
     
-placeholder:
+hooks:
     #if plugin is load, if not, there options are useless
     placeholder-api: true
     mvdwplaceholder-api: true
