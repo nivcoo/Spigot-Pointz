@@ -10,6 +10,10 @@ public class MWConfig {
 		this.name_gui = name_gui;
 	}
 
+	public MWConfig() {
+		new MWConfig("", "");
+	}
+
 	public String getGuiShopName() {
 		return name_shop.replace("&", "§");
 
