@@ -19,7 +19,7 @@ import fr.nivcoo.pointz.utils.DataBase;
 public class Commands implements CommandExecutor {
 	private Config message = Pointz.get().getMessages();
 	String prefix = message.getString("prefix");
-	private static DataBase bdd = Pointz.get().getBdd();
+	private static DataBase bdd = Pointz.get().getDB();
 
 	public void help(CommandSender p) {
 

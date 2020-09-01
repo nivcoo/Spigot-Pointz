@@ -1,6 +1,6 @@
 package fr.nivcoo.pointz.constructor;
 
-public class Items {
+public class ItemsShop {
 
 	private String name;
 	private int price;
@@ -8,7 +8,7 @@ public class Items {
 	private String icon;
 	private String cmd;
 
-	public Items(String name, int price, int priceIg, String icon, String cmd) {
+	public ItemsShop(String name, int price, int priceIg, String icon, String cmd) {
 		this.name = name;
 		this.price = price;
 		this.priceIg = priceIg;

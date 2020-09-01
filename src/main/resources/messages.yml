@@ -63,4 +63,4 @@ command-del-other: "{prefix} {1} vient de t'enlever {2} points sur la boutique !
 menu-converter-success-ig: "{prefix} Tu viens de payer {1} points sur la boutique in game"
 menu-converter-success-web: "{prefix} Tu as maintenant {1} points sur la boutique"
 menu-shop-success-ig: "{prefix} Tu viens de payer {1}$ et tu viens de recevoir ton achat !"
-menu-shop-success-web: "{prefix} Tu viens de payer {1}points et tu viens de recevoir ton achat !"
+menu-shop-success-web: "{prefix} Tu viens de payer {1} points et tu viens de recevoir ton achat !"

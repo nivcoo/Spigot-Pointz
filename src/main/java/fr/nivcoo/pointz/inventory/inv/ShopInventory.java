@@ -20,41 +20,56 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import fr.nivcoo.pointz.Pointz;
 import fr.nivcoo.pointz.commands.Commands;
-import fr.nivcoo.pointz.constructor.Items;
+import fr.nivcoo.pointz.constructor.ItemsShop;
 import fr.nivcoo.pointz.inventory.ClickableItem;
 import fr.nivcoo.pointz.inventory.Inventory;
 import fr.nivcoo.pointz.inventory.InventoryProvider;
 import fr.nivcoo.pointz.inventory.ItemBuilder;
 import fr.nivcoo.pointz.utils.Config;
+import fr.nivcoo.pointz.utils.DataBase;
 import fr.nivcoo.pointz.utils.ServerVersion;
 import net.milkbowl.vault.economy.Economy;
 
 public class ShopInventory implements InventoryProvider, Listener {
-	public static final String TITLE = "Boutique";
+	public static final String TITLE = "Shop";
 	public final String PAGE = "page";
 	public static final String UPDATE = "update";
+	private Pointz pointz;
+	private DataBase db;
 	private ClickableItem empty;
 	private ClickableItem glass;
 	private Config messages;
-	private String prefix = Pointz.get().getPrefix();
+	private String prefix;
+	private String titleGui;
+	private int itemsNumber;
+	private List<ItemsShop> getItemsShop;
 	private Material icon;
 
 	public ShopInventory() {
-		messages = Pointz.get().getMessages();
-
+		pointz = Pointz.get();
+		db = pointz.getDB();
+		messages = pointz.getMessages();
+		prefix = pointz.getPrefix();
+		itemsNumber = pointz.getItemsConverter().size();
+		getItemsShop = pointz.getItemsShop();
+		titleGui = pointz.getMWConfig().getGuiShopName();
 		empty = ClickableItem.of(ItemBuilder.of(Material.AIR).build());
-		glass = ClickableItem.of(ItemBuilder.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 7).build());
+		glass = ClickableItem.of(ItemBuilder
+				.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE
+						: Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 7)
+				.build());
 	}
 
 	@Override
 	public String title(Inventory inv) {
-		return ChatColor.RED.toString() + ChatColor.BOLD + ChatColor.stripColor((String) TITLE);
+		return (titleGui != null && !titleGui.equalsIgnoreCase("")) ? titleGui
+				: ChatColor.RED.toString() + ChatColor.BOLD + ChatColor.stripColor((String) TITLE);
 	}
 
 	@Override
 	public int rows(Inventory inv) {
-		int row = ((Pointz.get().getItems().size() + 8) / 9);
-		if(row == 0)
+		int row = ((itemsNumber + 8) / 9);
+		if (row == 0)
 			row++;
 		return row;
 	}
@@ -74,87 +89,91 @@ public class ShopInventory implements InventoryProvider, Listener {
 		inv.fill(empty);
 
 		int i = 0;
-		for (Items item : Pointz.get().getItems()) {
+		for (ItemsShop item : getItemsShop) {
 			List<String> lores = new ArrayList<String>();
 			lores.add("§7- Prix : §c" + item.getPrice());
 			if (item.getPriceIg() != 0)
 				lores.add("§7- Prix InGame : §c" + item.getPriceIg());
 			icon = Material.getMaterial(item.getIcon().toUpperCase());
-			if(icon == null) {
+			if (icon == null) {
 				icon = Material.DIRT;
 				lores.add("§cIcon de l'article invalide !");
 			}
-			ItemStack itemStack = ItemBuilder.of(icon, 1)
-					.name(ChatColor.RED + item.getName()).lore(lores).build();
+			ItemStack itemStack = ItemBuilder.of(icon, 1).name(ChatColor.RED + item.getName()).lore(lores).build();
 
 			inv.set(i, ClickableItem.of(itemStack, e -> {
-				
+
 				inv.fill(glass);
 				lores.add("§cCliquez à droite ou à gauche pour confirmer");
-				inv.set(5, inv.getRows()/2, ClickableItem.of(ItemBuilder.of(icon, 1)
-						.name(ChatColor.RED + item.getName()).lore(lores).build()));
-				if(inv.getRows() % 2 == 0)
-					inv.set(5, inv.getRows()/2+1, ClickableItem.of(ItemBuilder.of(icon, 1)
-							.name(ChatColor.RED + item.getName()).lore(lores).build()));
+				inv.set(5, inv.getRows() / 2 + 1, ClickableItem
+						.of(ItemBuilder.of(icon, 1).name(ChatColor.RED + item.getName()).lore(lores).build()));
+				if (inv.getRows() % 2 == 0)
+					inv.set(5, inv.getRows() / 2 + 1, ClickableItem
+							.of(ItemBuilder.of(icon, 1).name(ChatColor.RED + item.getName()).lore(lores).build()));
 				List<String> confirmLore = Arrays.asList("§c- §7Cliquez pour confirmer l'achat !");
-				if (item.getPriceIg() > 0)
-					inv.fillRectangle(0, 3, inv.getRows(),
-							ClickableItem.of(ItemBuilder.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14)
-									.name(ChatColor.GREEN + "§aPrix en jeux | Confirmation").lore(confirmLore).build(),
-									confirm -> {
-										Player p = (Player) confirm.getWhoClicked();
+				ClickableItem buyButton = ClickableItem.of(ItemBuilder
+						.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE
+								: Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14)
+						.name(ChatColor.GREEN + "§aPrix | Confirmation").lore(confirmLore).build(), confirm -> {
+							try {
 
-										RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager()
-												.getRegistration(Economy.class);
-										double playerMoney = rsp.getProvider().getBalance(p);
-										if (playerMoney >= item.getPriceIg()) {
-											rsp.getProvider().withdrawPlayer(p, item.getPriceIg());
-											p.sendMessage(messages.getString("menu-shop-success-ig", prefix,
-													String.valueOf(item.getPriceIg())));
-											Commands.sendCommand(p, item.getCmd());
-											return;
+								Player p = (Player) confirm.getWhoClicked();
 
-										} else {
-											confirm.getWhoClicked()
-													.sendMessage(messages.getString("no-require-money", prefix));
-											return;
-										}
+								String playerNameWebsite = getPseudoPlayer(p);
 
-									}));
-				inv.fillRectangle(6, 3, inv.getRows(), 
-						ClickableItem.of(
-								ItemBuilder.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14)
-										.name(ChatColor.GREEN + "§aPrix | Confirmation").lore(confirmLore).build(),
-								confirm -> {
-									try {
+								if (p.getName().equalsIgnoreCase(playerNameWebsite)) {
+									int playerMoney = getMoneyPlayer(p);
+									if (playerMoney >= item.getPrice()) {
+										int removePlayerMoney = playerMoney - item.getPrice();
 
-										Player p = (Player) confirm.getWhoClicked();
+										setPlayerMoney(p, removePlayerMoney);
 
-										String playerNameWebsite = getPseudoPlayer(p);
-
-										if (p.getName().equalsIgnoreCase(playerNameWebsite)) {
-											int playerMoney = getMoneyPlayer(p);
-											if (playerMoney >= item.getPrice()) {
-												int removePlayerMoney = playerMoney - item.getPrice();
-
-												setPlayerMoney(p, removePlayerMoney);
-
-												Commands.sendCommand(p, item.getCmd());
-												p.sendMessage(messages.getString("menu-shop-success-web", prefix,
-														String.valueOf(item.getPriceIg())));
-												return;
-											} else {
-												p.sendMessage(messages.getString("no-require-money", prefix));
-												return;
-											}
-										} else {
-											p.sendMessage(messages.getString("no-register-own", prefix));
-										}
-									} catch (SQLException a) {
-										a.printStackTrace();
+										Commands.sendCommand(p, item.getCmd());
+										p.sendMessage(messages.getString("menu-shop-success-web", prefix,
+												String.valueOf(item.getPrice())));
+										return;
+									} else {
+										p.sendMessage(messages.getString("no-require-money", prefix));
+										return;
 									}
+								} else {
+									p.sendMessage(messages.getString("no-register-own", prefix));
+								}
+							} catch (SQLException a) {
+								a.printStackTrace();
+							}
 
-								}));
+						});
+				if (item.getPriceIg() > 0)
+					inv.fillRectangle(0, 3, inv.getRows(), ClickableItem.of(
+							ItemBuilder
+									.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)
+											? Material.RED_STAINED_GLASS_PANE
+											: Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14)
+									.name(ChatColor.GREEN + "§aPrix en jeux | Confirmation").lore(confirmLore).build(),
+							confirm -> {
+								Player p = (Player) confirm.getWhoClicked();
+
+								RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager()
+										.getRegistration(Economy.class);
+								double playerMoney = rsp.getProvider().getBalance(p);
+								if (playerMoney >= item.getPriceIg()) {
+									rsp.getProvider().withdrawPlayer(p, item.getPriceIg());
+									p.sendMessage(messages.getString("menu-shop-success-ig", prefix,
+											String.valueOf(item.getPriceIg())));
+									Commands.sendCommand(p, item.getCmd());
+									return;
+
+								} else {
+									confirm.getWhoClicked().sendMessage(messages.getString("no-require-money", prefix));
+									return;
+								}
+
+							}));
+				else
+					inv.fillRectangle(0, 3, inv.getRows(), buyButton);
+				;
+				inv.fillRectangle(6, 3, inv.getRows(), buyButton);
 			}));
 			i++;
 		}
@@ -174,7 +193,7 @@ public class ShopInventory implements InventoryProvider, Listener {
 		Connection c = null;
 		ResultSet rs = null;
 		try {
-			c = Pointz.get().getBdd().getConnection();
+			c = db.getConnection();
 			ps = c.prepareStatement("SELECT money FROM users WHERE pseudo = ?");
 
 			ps.setString(1, player.getName());
@@ -198,7 +217,7 @@ public class ShopInventory implements InventoryProvider, Listener {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			c = Pointz.get().getBdd().getConnection();
+			c = db.getConnection();
 			ps = c.prepareStatement("SELECT pseudo FROM users WHERE pseudo = ?");
 
 			ps.setString(1, player.getName());
@@ -220,7 +239,7 @@ public class ShopInventory implements InventoryProvider, Listener {
 		Connection c = null;
 		PreparedStatement ps = null;
 		try {
-			c = Pointz.get().getBdd().getConnection();
+			c = db.getConnection();
 			ps = c.prepareStatement("UPDATE users SET money = ? WHERE pseudo = ?");
 
 			ps.setInt(1, money);

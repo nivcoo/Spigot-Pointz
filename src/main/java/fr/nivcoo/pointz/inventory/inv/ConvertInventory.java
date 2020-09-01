@@ -20,41 +20,56 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import fr.nivcoo.pointz.Pointz;
 import fr.nivcoo.pointz.commands.Commands;
-import fr.nivcoo.pointz.constructor.Offers;
+import fr.nivcoo.pointz.constructor.ItemsConverter;
 import fr.nivcoo.pointz.inventory.ClickableItem;
 import fr.nivcoo.pointz.inventory.Inventory;
 import fr.nivcoo.pointz.inventory.InventoryProvider;
 import fr.nivcoo.pointz.inventory.ItemBuilder;
 import fr.nivcoo.pointz.utils.Config;
+import fr.nivcoo.pointz.utils.DataBase;
 import fr.nivcoo.pointz.utils.ServerVersion;
 import net.milkbowl.vault.economy.Economy;
 
 public class ConvertInventory implements InventoryProvider, Listener {
-	public static final String TITLE = "Convertisseur";
+	public static final String TITLE = "Converter";
 	public final String PAGE = "page";
 	public static final String UPDATE = "update";
+	private Pointz pointz;
+	private DataBase db;
 	private ClickableItem empty;
 	private ClickableItem glass;
 	private Config messages;
-	private String prefix = Pointz.get().getPrefix();
+	private String prefix;
+	private String titleGui;
+
+	private int itemsNumber;
+	private List<ItemsConverter> getItemsConverter;
 	private Material icon;
 
 	public ConvertInventory() {
-		messages = Pointz.get().getMessages();
-
+		pointz = Pointz.get();
+		db = pointz.getDB();
+		messages = pointz.getMessages();
+		prefix = pointz.getPrefix();
+		itemsNumber = pointz.getItemsConverter().size();
+		getItemsConverter = pointz.getItemsConverter();
+		titleGui = pointz.getMWConfig().getGuiConverterName();
 		empty = ClickableItem.of(ItemBuilder.of(Material.AIR).build());
-		glass = ClickableItem.of(ItemBuilder.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 7).build());
+		glass = ClickableItem.of(ItemBuilder
+				.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE
+						: Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 7)
+				.build());
 	}
 
 	@Override
 	public String title(Inventory inv) {
-		return ChatColor.RED.toString() + ChatColor.BOLD + ChatColor.stripColor((String) TITLE);
+		return (titleGui != null && !titleGui.equalsIgnoreCase("")) ? titleGui : ChatColor.RED.toString() + ChatColor.BOLD + ChatColor.stripColor((String) TITLE);
 	}
 
 	@Override
 	public int rows(Inventory inv) {
-		int row = ((Pointz.get().getOffers().size() + 8) / 9);
-		if(row == 0)
+		int row = ((itemsNumber + 8) / 9);
+		if (row == 0)
 			row++;
 		return row;
 	}
@@ -73,7 +88,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
 			return;
 		inv.fill(empty);
 		int i = 0;
-		for (Offers offer : Pointz.get().getOffers()) {
+		for (ItemsConverter offer : getItemsConverter) {
 			List<String> lores = new ArrayList<String>();
 			int a = 0;
 			for (String lore : offer.getLores().split("\\[[^\\[]*\\]")) {
@@ -86,26 +101,27 @@ public class ConvertInventory implements InventoryProvider, Listener {
 			lores.add("§7- Gain boutique : §c" + offer.getPrice());
 			lores.add("§7- Prix en jeux : §c" + offer.getPriceIg());
 			icon = Material.getMaterial(offer.getIcon().toUpperCase());
-			if(icon == null) {
+			if (icon == null) {
 				icon = Material.DIRT;
 				lores.add("§cIcon de l'article invalide !");
 			}
 
-			ItemStack itemStack = ItemBuilder.of(icon, 1)
-					.name(ChatColor.RED + offer.getName()).lore(lores).build();
+			ItemStack itemStack = ItemBuilder.of(icon, 1).name(ChatColor.RED + offer.getName()).lore(lores).build();
 
 			inv.set(i, ClickableItem.of(itemStack, e -> {
 				inv.fill(glass);
 				lores.add("§cCliquez à droite ou à gauche pour confirmer");
-				inv.set(5, inv.getRows() / 2, ClickableItem.of(ItemBuilder.of(icon, 1)
-						.name(ChatColor.RED + offer.getName()).lore(lores).build()));
+				inv.set(5, inv.getRows() / 2 + 1, ClickableItem
+						.of(ItemBuilder.of(icon, 1).name(ChatColor.RED + offer.getName()).lore(lores).build()));
 				if (inv.getRows() % 2 == 0)
-					inv.set(5, inv.getRows() / 2 + 1,
-							ClickableItem.of(ItemBuilder.of(icon, 1)
-									.name(ChatColor.RED + offer.getName()).lore(lores).build()));
+					inv.set(5, inv.getRows() / 2 + 1, ClickableItem
+							.of(ItemBuilder.of(icon, 1).name(ChatColor.RED + offer.getName()).lore(lores).build()));
 				List<String> confirmLore = Arrays.asList("§c- §7Cliquez pour confirmer l'achat !");
 				ClickableItem confirmation = ClickableItem.of(
-						ItemBuilder.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14)
+						ItemBuilder
+								.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)
+										? Material.RED_STAINED_GLASS_PANE
+										: Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14)
 								.name(ChatColor.GREEN + "§aConvertir | Confirmation").lore(confirmLore).build(),
 						confirm -> {
 							try {
@@ -162,7 +178,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
 		Connection c = null;
 		ResultSet rs = null;
 		try {
-			c = Pointz.get().getBdd().getConnection();
+			c = db.getConnection();
 			ps = c.prepareStatement("SELECT money FROM users WHERE pseudo = ?");
 
 			ps.setString(1, player.getName());
@@ -186,7 +202,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			c = Pointz.get().getBdd().getConnection();
+			c = db.getConnection();
 			ps = c.prepareStatement("SELECT pseudo FROM users WHERE pseudo = ?");
 
 			ps.setString(1, player.getName());
@@ -208,7 +224,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
 		Connection c = null;
 		PreparedStatement ps = null;
 		try {
-			c = Pointz.get().getBdd().getConnection();
+			c = db.getConnection();
 			ps = c.prepareStatement("UPDATE users SET money = ? WHERE pseudo = ?");
 
 			ps.setInt(1, money);

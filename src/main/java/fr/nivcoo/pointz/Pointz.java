@@ -12,9 +12,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.nivcoo.pointz.commands.Commands;
 import fr.nivcoo.pointz.commands.GuiCommands;
-import fr.nivcoo.pointz.constructor.Configurations;
-import fr.nivcoo.pointz.constructor.Items;
-import fr.nivcoo.pointz.constructor.Offers;
+import fr.nivcoo.pointz.constructor.MWConfig;
+import fr.nivcoo.pointz.constructor.ItemsShop;
+import fr.nivcoo.pointz.constructor.ItemsConverter;
 import fr.nivcoo.pointz.inventory.Inventories;
 import fr.nivcoo.pointz.inventory.InventoryManager;
 import fr.nivcoo.pointz.placeholder.RegisterMVDWPAPI;
@@ -26,11 +26,11 @@ public class Pointz extends JavaPlugin implements Listener {
 	private static Pointz INSTANCE;
 	private static Config config;
 	private static Config configMessage;
-	private static DataBase bdd;
+	private static DataBase db;
 	// public static GuiShop guiShop;
-	public List<Items> getItems;
-	public List<Offers> getOffers;
-	public List<Configurations> getConfig;
+	private List<ItemsShop> getItemsShop;
+	private List<ItemsConverter> getItemsConverter;
+	private MWConfig getMWConfig;
 	private InventoryManager inventoryManager;
 	private Inventories inventories;
 	private String prefix;
@@ -40,32 +40,32 @@ public class Pointz extends JavaPlugin implements Listener {
 		INSTANCE = this;
 		config = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "config.yml"));
 		configMessage = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "messages.yml"));
-		bdd = new DataBase(config.getString("database.host"), config.getString("database.database"),
+		db = new DataBase(config.getString("database.host"), config.getString("database.database"),
 				config.getString("database.username"), config.getString("database.password"),
 				config.getString("database.port"));
 		prefix = configMessage.getString("prefix");
-		bdd.connection();
-		ResultSet getlistItems = null;
-		ResultSet getlistOffers = null;
-		ResultSet getlistConfig = null;
+		db.connection();
+		ResultSet getlistItemsShop = null;
+		ResultSet getlistItemsConverter = null;
+		ResultSet getlistMWConfig = null;
 
 		saveDefaultConfig();
 		Bukkit.getConsoleSender().sendMessage("§c===============§b==============");
 		Bukkit.getConsoleSender().sendMessage("§7Pointz §av" + this.getDescription().getVersion());
-		if (bdd.connected()) {
+		if (db.connected()) {
 			Bukkit.getConsoleSender().sendMessage("§7Database: §aOkay !");
-			getlistItems = bdd.getResultSet("SELECT * FROM pointz__items");
-			getlistOffers = bdd.getResultSet("SELECT * FROM pointz__offers");
-			getlistConfig = bdd.getResultSet("SELECT * FROM pointz__configurations");
+			getlistItemsShop = db.getResultSet("SELECT * FROM pointz__items__shop");
+			getlistItemsConverter = db.getResultSet("SELECT * FROM pointz__items__converter");
+			getlistMWConfig = db.getResultSet("SELECT * FROM pointz__configurations");
 		} else
 			Bukkit.getConsoleSender().sendMessage("§7Database: §cNo !");
 
-		if (getlistItems != null)
+		if (getlistItemsShop != null)
 			Bukkit.getConsoleSender().sendMessage("§7Plugin-Pointz: §aOkay !");
 		else
 			Bukkit.getConsoleSender().sendMessage("§7Plugin-Pointz: §cNo !");
 		Bukkit.getConsoleSender().sendMessage("");
-		if (bdd.connected() && getlistItems != null)
+		if (db.connected() && getlistItemsShop != null)
 			Bukkit.getConsoleSender().sendMessage("§aPlugin Enabled !");
 		else {
 			Bukkit.getConsoleSender().sendMessage("§cPlugin Disabled !");
@@ -78,24 +78,26 @@ public class Pointz extends JavaPlugin implements Listener {
 
 		try {
 
-			getItems = new ArrayList<>();
-			getOffers = new ArrayList<>();
-			getConfig = new ArrayList<>();
-			while (getlistConfig.next()) {
-				getConfig.add(
-						new Configurations(getlistConfig.getString("name_shop"), getlistConfig.getString("name_gui")));
+			getItemsShop = new ArrayList<>();
+			getItemsConverter = new ArrayList<>();
+			while (getlistMWConfig.next()) {
+				System.out.println(getlistMWConfig.getString("name_shop"));
+				System.out.println(getlistMWConfig.getString("name_gui"));
+				getMWConfig = new MWConfig(getlistMWConfig.getString("name_shop"),
+						getlistMWConfig.getString("name_gui"));
 			}
-			while (getlistOffers.next()) {
-				getOffers.add(new Offers(getlistOffers.getString("name"), getlistOffers.getString("icon"),
-						getlistOffers.getInt("price"), getlistOffers.getInt("price_ig"),
-						getlistOffers.getString("lores"), getlistOffers.getString("commands")));
+			while (getlistItemsConverter.next()) {
+				getItemsConverter.add(new ItemsConverter(getlistItemsConverter.getString("name"),
+						getlistItemsConverter.getString("icon"), getlistItemsConverter.getInt("price"),
+						getlistItemsConverter.getInt("price_ig"), getlistItemsConverter.getString("lores"),
+						getlistItemsConverter.getString("commands")));
 			}
-			while (getlistItems.next()) {
-				ResultSet getAllItems = bdd
-						.getResultSet("SELECT * FROM shop__items WHERE id=" + getlistItems.getInt("item_id"));
+			while (getlistItemsShop.next()) {
+				ResultSet getAllItems = db
+						.getResultSet("SELECT * FROM shop__items WHERE id=" + getlistItemsShop.getInt("item_id"));
 				while (getAllItems.next()) {
-					getItems.add(new Items(getAllItems.getString("name"), getAllItems.getInt("price"),
-							getlistItems.getInt("price_ig"), getlistItems.getString("icon"),
+					getItemsShop.add(new ItemsShop(getAllItems.getString("name"), getAllItems.getInt("price"),
+							getlistItemsShop.getInt("price_ig"), getlistItemsShop.getString("icon"),
 							getAllItems.getString("commands")));
 				}
 			}
@@ -113,12 +115,11 @@ public class Pointz extends JavaPlugin implements Listener {
 
 		}
 
-		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")
-				&& config.getBoolean("hooks.placeholder-api")) {
+		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") && config.getBoolean("hooks.placeholder-api")) {
 			new PlaceHolderAPI().register();
 
 		}
-		bdd.disconnection();
+		db.disconnection();
 
 		inventoryManager = new InventoryManager();
 		inventoryManager.init();
@@ -127,8 +128,9 @@ public class Pointz extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		bdd.disconnection();
-		inventoryManager.closeAllInventories();
+		db.disconnection();
+		if (inventoryManager != null)
+			inventoryManager.closeAllInventories();
 
 	}
 
@@ -140,20 +142,24 @@ public class Pointz extends JavaPlugin implements Listener {
 		return config;
 	}
 
-	public DataBase getBdd() {
-		return bdd;
+	public DataBase getDB() {
+		return db;
 	}
 
 	public static Pointz get() {
 		return INSTANCE;
 	}
 
-	public List<Items> getItems() {
-		return getItems;
+	public MWConfig getMWConfig() {
+		return getMWConfig;
 	}
 
-	public List<Offers> getOffers() {
-		return getOffers;
+	public List<ItemsShop> getItemsShop() {
+		return getItemsShop;
+	}
+
+	public List<ItemsConverter> getItemsConverter() {
+		return getItemsConverter;
 	}
 
 	public InventoryManager getInventoryManager() {
