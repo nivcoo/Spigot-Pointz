@@ -85,7 +85,7 @@ public class Pointz extends JavaPlugin implements Listener {
 						getlistMWConfig.getString("name_gui"));
 			}
 			if(getMWConfig == null)
-				getMWConfig = new MWConfig();
+				getMWConfig = new MWConfig("", "");
 			while (getlistItemsConverter.next()) {
 				getItemsConverter.add(new ItemsConverter(getlistItemsConverter.getString("name"),
 						getlistItemsConverter.getString("icon"), getlistItemsConverter.getInt("price"),
