@@ -7,7 +7,7 @@ import fr.nivcoo.pointz.placeholder.placeholder.MVDWPlaceHolderAPI;
 public class RegisterMVDWPAPI {
 	
 	public RegisterMVDWPAPI(String name, Pointz pointz) {
-		PlaceholderAPI.registerPlaceholder(pointz, "pointz_get_money",
+		PlaceholderAPI.registerPlaceholder(pointz, name,
 				new MVDWPlaceHolderAPI(pointz));
 	}
 

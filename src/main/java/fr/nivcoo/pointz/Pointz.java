@@ -18,7 +18,7 @@ import fr.nivcoo.pointz.constructor.Offers;
 import fr.nivcoo.pointz.inventory.Inventories;
 import fr.nivcoo.pointz.inventory.InventoryManager;
 import fr.nivcoo.pointz.placeholder.RegisterMVDWPAPI;
-import fr.nivcoo.pointz.placeholder.RegisterPAPI;
+import fr.nivcoo.pointz.placeholder.placeholder.PlaceHolderAPI;
 import fr.nivcoo.pointz.utils.Config;
 import fr.nivcoo.pointz.utils.DataBase;
 
@@ -115,7 +115,7 @@ public class Pointz extends JavaPlugin implements Listener {
 
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")
 				&& config.getBoolean("hooks.placeholder-api")) {
-			new RegisterPAPI();
+			new PlaceHolderAPI().register();
 
 		}
 		bdd.disconnection();

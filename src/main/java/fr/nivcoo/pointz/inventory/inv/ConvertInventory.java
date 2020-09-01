@@ -54,6 +54,8 @@ public class ConvertInventory implements InventoryProvider, Listener {
 	@Override
 	public int rows(Inventory inv) {
 		int row = ((Pointz.get().getOffers().size() + 8) / 9) * 4;
+		if(row == 0)
+			row++;
 		return row;
 	}
 

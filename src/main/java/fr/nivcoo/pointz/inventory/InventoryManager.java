@@ -64,7 +64,7 @@ public class InventoryManager implements Listener {
 	public void closeInventory(Player p) {
 		p.closeInventory();
 	}
-	
+
 	public void closeAllInventories() {
 		for (Inventory inv : inventories.values())
 			inv.getPlayer().closeInventory();

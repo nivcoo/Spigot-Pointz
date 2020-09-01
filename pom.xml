@@ -5,7 +5,7 @@
 
 	<groupId>fr.nivcoo</groupId>
 	<artifactId>Pointz</artifactId>
-	<version>2.0.1</version>
+	<version>2.0.2</version>
 	<packaging>jar</packaging>
 
 	<name>Pointz</name>
@@ -16,6 +16,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
+
 	<repositories>
 
 		<repository>
@@ -27,9 +28,16 @@
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
 		<repository>
+			<id>mvdw-software</id>
+			<name>MVdW Public Repositories</name>
+			<url>http://repo.mvdw-software.be/content/groups/public/</url>
+		</repository>
+		<repository>
 			<id>private</id>
 			<url>http://edensky.fr/artifactory/private/</url>
 		</repository>
+
+
 	</repositories>
 
 	<dependencies>
@@ -49,6 +57,13 @@
 			<groupId>me.clip</groupId>
 			<artifactId>placeholderapi</artifactId>
 			<version>2.10.4</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>be.maximvdw</groupId>
+			<artifactId>MVdWPlaceholderAPI</artifactId>
+			<version>3.1.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -59,7 +74,7 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<defaultGoal>clean install</defaultGoal>
 		<finalName>Pointz-${project.version}</finalName>
@@ -79,16 +94,34 @@
 				<version>3.1.0</version>
 				<executions>
 					<execution>
+						<id>shaded</id>
 						<phase>package</phase>
 						<goals>
 							<goal>shade</goal>
 						</goals>
+						<configuration>
+							<shadedArtifactAttached>false</shadedArtifactAttached>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<artifactSet>
+								<excludes>
+									<exclude>org.projectlombok:lombok</exclude>
+								</excludes>
+							</artifactSet>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
-
 
 </project>

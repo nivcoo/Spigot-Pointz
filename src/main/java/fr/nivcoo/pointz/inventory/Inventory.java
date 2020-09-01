@@ -26,7 +26,8 @@ public class Inventory {
 		this.values = new HashMap<>();
 		this.player = player;
 		this.inventoryProvider = inventoryProvider;
-		params.accept(this);
+		if (params != null)
+			params.accept(this);
 		this.excluseCases = inventoryProvider.excluseCases(this);
 		this.size = inventoryProvider.rows(this);
 		this.items = new ClickableItem[9 * size];

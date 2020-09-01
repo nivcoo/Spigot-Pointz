@@ -54,6 +54,8 @@ public class ShopInventory implements InventoryProvider, Listener {
 	@Override
 	public int rows(Inventory inv) {
 		int row = ((Pointz.get().getItems().size() + 8) / 9)*4;
+		if(row == 0)
+			row++;
 		return row;
 	}
 
