@@ -1,13 +1,12 @@
 package fr.nivcoo.pointz.placeholder.placeholder;
 
-import java.sql.SQLException;
+import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 
 import be.maximvdw.placeholderapi.PlaceholderReplaceEvent;
 import be.maximvdw.placeholderapi.PlaceholderReplacer;
 import fr.nivcoo.pointz.Pointz;
-import fr.nivcoo.pointz.commands.Commands;
 
 public class MVDWPlaceHolderAPI implements PlaceholderReplacer {
 
@@ -21,13 +20,15 @@ public class MVDWPlaceHolderAPI implements PlaceholderReplacer {
 	public String onPlaceholderReplace(PlaceholderReplaceEvent event) {
 		if (event.getPlaceholder().equalsIgnoreCase("pointz_get_money")) {
 			Player player = event.getPlayer();
-			int money = 0;
-			try {
-				money = Commands.getMoneyPlayer(player);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+
+			HashMap<String, String> user = Pointz.get().getWebsiteAPI().getPlayerInfos(player);
+
+			String money = "0";
+			if (user.get("error") == "true")
+				return money;
+			money = user.get("money");
 			return String.valueOf(money);
+
 		}
 		return null;
 	}

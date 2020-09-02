@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
+
 public interface InventoryProvider {
 
 	public String title(Inventory inv);

@@ -1,20 +1,15 @@
 package fr.nivcoo.pointz.inventory.inv;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -26,7 +21,6 @@ import fr.nivcoo.pointz.inventory.Inventory;
 import fr.nivcoo.pointz.inventory.InventoryProvider;
 import fr.nivcoo.pointz.inventory.ItemBuilder;
 import fr.nivcoo.pointz.utils.Config;
-import fr.nivcoo.pointz.utils.DataBase;
 import fr.nivcoo.pointz.utils.ServerVersion;
 import net.milkbowl.vault.economy.Economy;
 
@@ -35,7 +29,6 @@ public class ShopInventory implements InventoryProvider, Listener {
 	public final String PAGE = "page";
 	public static final String UPDATE = "update";
 	private Pointz pointz;
-	private DataBase db;
 	private ClickableItem empty;
 	private ClickableItem glass;
 	private Config messages;
@@ -47,10 +40,9 @@ public class ShopInventory implements InventoryProvider, Listener {
 
 	public ShopInventory() {
 		pointz = Pointz.get();
-		db = pointz.getDB();
 		messages = pointz.getMessages();
 		prefix = pointz.getPrefix();
-		itemsNumber = pointz.getItemsConverter().size();
+		itemsNumber = pointz.getItemsShop().size();
 		getItemsShop = pointz.getItemsShop();
 		titleGui = pointz.getMWConfig().getGuiShopName();
 		empty = ClickableItem.of(ItemBuilder.of(Material.AIR).build());
@@ -115,32 +107,27 @@ public class ShopInventory implements InventoryProvider, Listener {
 						.of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE
 								: Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14)
 						.name(ChatColor.GREEN + "§aPrix | Confirmation").lore(confirmLore).build(), confirm -> {
-							try {
+							Player p = (Player) confirm.getWhoClicked();
 
-								Player p = (Player) confirm.getWhoClicked();
+							HashMap<String, String> user = pointz.getWebsiteAPI().getPlayerInfos(p);
 
-								String playerNameWebsite = getPseudoPlayer(p);
+							if (user.get("error") == "false") {
+								int playerMoney = Integer.parseInt(user.get("money"));
+								if (playerMoney >= item.getPrice()) {
+									int removePlayerMoney = playerMoney - item.getPrice();
 
-								if (p.getName().equalsIgnoreCase(playerNameWebsite)) {
-									int playerMoney = getMoneyPlayer(p);
-									if (playerMoney >= item.getPrice()) {
-										int removePlayerMoney = playerMoney - item.getPrice();
+									pointz.getWebsiteAPI().setMoneyPlayer(p, removePlayerMoney);
 
-										setPlayerMoney(p, removePlayerMoney);
-
-										Commands.sendCommand(p, item.getCmd());
-										p.sendMessage(messages.getString("menu-shop-success-web", prefix,
-												String.valueOf(item.getPrice())));
-										return;
-									} else {
-										p.sendMessage(messages.getString("no-require-money", prefix));
-										return;
-									}
+									Commands.sendCommand(p, item.getCmd());
+									p.sendMessage(messages.getString("menu-shop-success-web", prefix,
+											String.valueOf(item.getPrice())));
+									return;
 								} else {
-									p.sendMessage(messages.getString("no-register-own", prefix));
+									p.sendMessage(messages.getString("no-require-money", prefix));
+									return;
 								}
-							} catch (SQLException a) {
-								a.printStackTrace();
+							} else {
+								p.sendMessage(messages.getString("no-register-own", prefix));
 							}
 
 						});
@@ -179,91 +166,6 @@ public class ShopInventory implements InventoryProvider, Listener {
 		}
 		inv.put(UPDATE, false);
 
-	}
-
-	@Override
-	public void onClose(InventoryCloseEvent e, Inventory inv) {
-		Player p = (Player) e.getPlayer();
-		p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, .4f, 1.7f);
-
-	}
-
-	private int getMoneyPlayer(Player player) throws SQLException {
-		PreparedStatement ps = null;
-		Connection c = null;
-		ResultSet rs = null;
-		try {
-			c = db.getConnection();
-			ps = c.prepareStatement("SELECT money FROM users WHERE pseudo = ?");
-
-			ps.setString(1, player.getName());
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				return rs.getInt("money");
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			ps.close();
-			c.close();
-		}
-		return 0;
-
-	}
-
-	private String getPseudoPlayer(Player player) throws SQLException {
-		Connection c = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			c = db.getConnection();
-			ps = c.prepareStatement("SELECT pseudo FROM users WHERE pseudo = ?");
-
-			ps.setString(1, player.getName());
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				return rs.getString("pseudo");
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.closeDb(c, ps, rs);
-		}
-		return null;
-
-	}
-
-	private void setPlayerMoney(Player player, int money) throws SQLException {
-		Connection c = null;
-		PreparedStatement ps = null;
-		try {
-			c = db.getConnection();
-			ps = c.prepareStatement("UPDATE users SET money = ? WHERE pseudo = ?");
-
-			ps.setInt(1, money);
-			ps.setString(2, player.getName());
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.closeDb(c, ps, null);
-		}
-
-	}
-
-	private void closeDb(Connection c, PreparedStatement ps, ResultSet rs) {
-		try {
-			if (c != null)
-				c.close();
-			if (ps != null)
-				ps.close();
-			if (rs != null)
-				rs.close();
-		} catch (Exception e) {
-			System.out.println("Error while closing database c: " + e);
-		}
 	}
 
 }

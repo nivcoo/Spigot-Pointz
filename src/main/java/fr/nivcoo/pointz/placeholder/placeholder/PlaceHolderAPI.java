@@ -1,11 +1,11 @@
 package fr.nivcoo.pointz.placeholder.placeholder;
 
-import java.sql.SQLException;
+import java.util.HashMap;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import fr.nivcoo.pointz.commands.Commands;
+import fr.nivcoo.pointz.Pointz;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 public class PlaceHolderAPI extends PlaceholderExpansion {
@@ -32,12 +32,13 @@ public class PlaceHolderAPI extends PlaceholderExpansion {
 	public String onRequest(OfflinePlayer player, String identifier) {
 
 		if (identifier.equals("get_money")) {
-			int money = 0;
-			try {
-				money = Commands.getMoneyPlayer((Player) player);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+
+			HashMap<String, String> user = Pointz.get().getWebsiteAPI().getPlayerInfos((Player) player);
+
+			String money = "0";
+			if (user.get("error") == "true")
+				return money;
+			money = user.get("money");
 			return String.valueOf(money);
 		}
 
