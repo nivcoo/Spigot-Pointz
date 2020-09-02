@@ -149,14 +149,13 @@ public class WebsiteAPI {
 	}
 
 	public void setMoneyPlayer(Player player, int new_money) {
-		String response = null;
 		try {
 			HashMap<String, String> params = new HashMap<>();
 			params.put("type", "set_money_player");
 			params.put("username", player.getName());
 			params.put("new_money", String.valueOf(new_money));
 
-			response = sendPost(url, params);
+			sendPost(url, params);
 
 		} catch (Exception e) {
 			Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #4");
@@ -174,7 +173,6 @@ public class WebsiteAPI {
 		params.put("type", "check_key");
 
 		response = sendPost(url, params);
-		System.out.println(response);
 		JSONParser parse = new JSONParser();
 		JSONObject jobj = (JSONObject) parse.parse(response);
 		results.put("error", String.valueOf(jobj.get("error")));

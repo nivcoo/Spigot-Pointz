@@ -67,6 +67,7 @@ public class Pointz extends JavaPlugin implements Listener {
 
 		Bukkit.getConsoleSender().sendMessage("§c===============§b==============");
 		Bukkit.getConsoleSender().sendMessage("§7Pointz §av" + this.getDescription().getVersion());
+		Bukkit.getConsoleSender().sendMessage("§7Website URL: §a" + config.getString("api.website_url") + " !");
 		if (pluginWebIsEnabled)
 			Bukkit.getConsoleSender().sendMessage("§7Plugin-Pointz: §aOkay !");
 		else
