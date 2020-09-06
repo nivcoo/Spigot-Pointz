@@ -68,7 +68,7 @@ public class Commands implements CommandExecutor {
 								sender.sendMessage(message.getString("no-register-own", prefix));
 								return false;
 							}
-							int money = Integer.parseInt(user.get("money"));
+							float money = Float.parseFloat(user.get("money"));
 
 							player.sendMessage(message.getString("check-command", prefix, String.valueOf(money)));
 						} else {
@@ -83,23 +83,23 @@ public class Commands implements CommandExecutor {
 							if (args.length == 3 && (!args[1].isEmpty() && Integer.parseInt(args[2]) > 0)) {
 								int numberArg_2 = Integer.parseInt(args[2]);
 								Player cible = Bukkit.getPlayer(args[1]);
-								HashMap<String, String> user_cible = pointz.getWebsiteAPI().getPlayerInfos(player);
+								HashMap<String, String> user_cible = pointz.getWebsiteAPI().getPlayerInfos(cible);
 								String playerName = player.getName();
 
 								if (cible != null && cible != player) {
 									if (user_cible.get("error") == "false") {
 										if (user.get("error") == "false") {
-											int getPlayer_money = Integer.parseInt(user.get("money"));
+											float getPlayer_money = Float.parseFloat(user.get("money"));
 
 											if (getPlayer_money >= numberArg_2) {
 
-												int getPlayer_money_after = getPlayer_money - numberArg_2;
+												float getPlayer_money_after = getPlayer_money - numberArg_2;
 												pointz.getWebsiteAPI().setMoneyPlayer(player, getPlayer_money_after);
-												int getCible_money = 0;
+												float getCible_money = 0;
 
-												getCible_money = Integer.parseInt(user_cible.get("money"));
+												getCible_money = Float.parseFloat(user_cible.get("money"));
 
-												int getCible_money_after = getCible_money + numberArg_2;
+												float getCible_money_after = getCible_money + numberArg_2;
 												pointz.getWebsiteAPI().setMoneyPlayer(cible, getCible_money_after);
 												player.sendMessage(message
 														.getString("send-old", prefix,
@@ -185,9 +185,9 @@ public class Commands implements CommandExecutor {
 							if (Bukkit.getOnlinePlayers().contains(cible)) {
 								if (user_cible.get("error") == "false") {
 
-									int playerMoney = Integer.parseInt(user_cible.get("money"));
+									float playerMoney = Float.parseFloat(user_cible.get("money"));
 
-									int newPlayerMoney = playerMoney + numberArg_2;
+									float newPlayerMoney = playerMoney + numberArg_2;
 									pointz.getWebsiteAPI().setMoneyPlayer(cible, newPlayerMoney);
 									if (sender != cible)
 										sender.sendMessage(message.getString("command-add-own", prefix,
@@ -213,9 +213,9 @@ public class Commands implements CommandExecutor {
 							
 							if (user_cible.get("error") == "false") {
 
-								int playerMoney = Integer.parseInt(user_cible.get("money"));
+								float playerMoney = Float.parseFloat(user_cible.get("money"));
 
-								int newPlayerMoney = playerMoney - numberArg_2;
+								float newPlayerMoney = playerMoney - numberArg_2;
 								if (newPlayerMoney >= 0) {
 									pointz.getWebsiteAPI().setMoneyPlayer(cible, newPlayerMoney);
 									if (sender != cible)

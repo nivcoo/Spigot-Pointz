@@ -148,12 +148,12 @@ public class WebsiteAPI {
 		return results;
 	}
 
-	public void setMoneyPlayer(Player player, int new_money) {
+	public void setMoneyPlayer(Player player, float getCible_money_after) {
 		try {
 			HashMap<String, String> params = new HashMap<>();
 			params.put("type", "set_money_player");
 			params.put("username", player.getName());
-			params.put("new_money", String.valueOf(new_money));
+			params.put("new_money", String.valueOf(getCible_money_after));
 
 			sendPost(url, params);
 

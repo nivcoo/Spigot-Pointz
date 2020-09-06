@@ -125,8 +125,8 @@ public class ConvertInventory implements InventoryProvider, Listener {
 								double playerMoney = rsp.getProvider().getBalance(p);
 								if (playerMoney >= offer.getPriceIg()) {
 									rsp.getProvider().withdrawPlayer(p, offer.getPriceIg());
-									int playerMoneyWebsite = Integer.parseInt(user.get("money"));
-									int removePlayerMoney = playerMoneyWebsite + offer.getPrice();
+									float playerMoneyWebsite = Float.parseFloat(user.get("money"));
+									float removePlayerMoney = playerMoneyWebsite + offer.getPrice();
 									pointz.getWebsiteAPI().setMoneyPlayer(p, removePlayerMoney);
 									Commands.sendCommand(p, offer.getCmd());
 									p.sendMessage(messages.getString("menu-converter-success-ig", prefix,

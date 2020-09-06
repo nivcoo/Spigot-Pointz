@@ -112,9 +112,9 @@ public class ShopInventory implements InventoryProvider, Listener {
 							HashMap<String, String> user = pointz.getWebsiteAPI().getPlayerInfos(p);
 
 							if (user.get("error") == "false") {
-								int playerMoney = Integer.parseInt(user.get("money"));
+								float playerMoney = Float.parseFloat(user.get("money"));
 								if (playerMoney >= item.getPrice()) {
-									int removePlayerMoney = playerMoney - item.getPrice();
+									float removePlayerMoney = playerMoney - item.getPrice();
 
 									pointz.getWebsiteAPI().setMoneyPlayer(p, removePlayerMoney);
 
