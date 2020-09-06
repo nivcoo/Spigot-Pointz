@@ -15,21 +15,26 @@ Le plugin Pointz permet **grossièrement** de lier votre serveur au site (boutiq
 
 ### config.yml
 ```yml
-#
-# MySQL settings.
-#
-database:
-    host: "localhost"
-    username: "root"
-    password: ""
-    database: "mineweb"
-    #default = 3306
-    port: 3306
-    
-placeholder:
-    #if plugin is load, if not, there options are useless
-    placeholder-api: true
-    mvdwplaceholder-api: true
+hooks:
+  #if plugin is load, if not, there options are useless
+  placeholder-api: true
+  mvdwplaceholder-api: true
+
+
+api:
+  website_url: "https://edensky.fr"
+  #paste here your public key, get it on website (this is an example)
+  public_key: "-----BEGIN PUBLIC KEY-----
+                 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3vcaidbuH0Atm50iMkSh
+                 TzaYrKEa3zi9TR7yX3bjL4fCo/rKnRc/HbVeH1AUhOT/TYsqBb/ZTyx8/i+XAZDb
+                 0XnlnorTFSjC8tz7tVepv8+HfIw2jUIvUfMmgnhn1YwIXnJpgR/TJnAF04F5v/oD
+                 UpIj2Dg6VP+MfBElaP4ddluHjZGzrIw+84gta1NuV1If2xgqQ0KxL8fxtnW3H9Qt
+                 gu9BIH1Du8bpNBhURvtvUh3bf/3eHeilkfgI4KDTwTk8cnIIifPrafMAg/8/Apja
+                 lDkFxztRYD7TTxFqLluhDFKR7sU8szDcivdB9NvXl4CoGXr5e/zaJ5IoeaiZBUTB
+                 gQIDAQAB
+                 -----END PUBLIC KEY-----"
+
+ 
 ```
 
 ### messages.yml
