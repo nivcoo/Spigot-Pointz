@@ -21,10 +21,10 @@ public class MVDWPlaceHolderAPI implements PlaceholderReplacer {
 		if (event.getPlaceholder().equalsIgnoreCase("pointz_get_money")) {
 			Player player = event.getPlayer();
 
-			HashMap<String, String> user = Pointz.get().getWebsiteAPI().getPlayerInfos(player);
+			HashMap<String, String> user = Pointz.get().getUserWebsite().get(player.getName());
 
 			String money = "0";
-			if (user.get("error") == "true")
+			if (user == null || user.get("error") == "true")
 				return money;
 			money = user.get("money");
 			return String.valueOf(money);

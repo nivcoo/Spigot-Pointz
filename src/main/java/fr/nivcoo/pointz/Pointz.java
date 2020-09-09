@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.nivcoo.pointz.commands.Commands;
 import fr.nivcoo.pointz.commands.GuiCommands;
@@ -32,6 +34,9 @@ public class Pointz extends JavaPlugin implements Listener {
 	private MWConfig mwConfig;
 	private List<ItemsConverter> getItemsConverter;
 	private List<ItemsShop> getItemsShop;
+	private BukkitRunnable br;
+
+	HashMap<String, HashMap<String, String>> getUserWebsite;
 
 	@Override
 	public void onEnable() {
@@ -109,6 +114,25 @@ public class Pointz extends JavaPlugin implements Listener {
 		inventoryManager = new InventoryManager();
 		inventoryManager.init();
 		inventories = new Inventories();
+
+		getUserWebsite = new HashMap<>();
+
+		br = new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+
+					HashMap<String, String> user = websiteAPI.getPlayerInfos(p);
+
+					getUserWebsite.put(p.getName(), user);
+
+				}
+
+			}
+
+		};
+		br.runTaskTimerAsynchronously(this, 1, 5);
 	}
 
 	@Override
@@ -161,6 +185,10 @@ public class Pointz extends JavaPlugin implements Listener {
 
 	public List<ItemsShop> getItemsShop() {
 		return getItemsShop;
+	}
+	
+	public HashMap<String, HashMap<String, String>> getUserWebsite() {
+		return getUserWebsite;
 	}
 
 }
