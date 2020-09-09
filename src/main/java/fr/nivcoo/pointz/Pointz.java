@@ -132,7 +132,7 @@ public class Pointz extends JavaPlugin implements Listener {
 			}
 
 		};
-		br.runTaskTimerAsynchronously(this, 1, 5);
+		br.runTaskTimerAsynchronously(this, 1, 20*2);
 	}
 
 	@Override
