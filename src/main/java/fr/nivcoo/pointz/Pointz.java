@@ -132,7 +132,8 @@ public class Pointz extends JavaPlugin implements Listener {
 			}
 
 		};
-		br.runTaskTimerAsynchronously(this, 1, 20*2);
+		if (config.getBoolean("hooks.mvdwplaceholder-api") || config.getBoolean("hooks.placeholder-api"))
+			br.runTaskTimerAsynchronously(this, 1, 20 * 2);
 	}
 
 	@Override
@@ -186,7 +187,7 @@ public class Pointz extends JavaPlugin implements Listener {
 	public List<ItemsShop> getItemsShop() {
 		return getItemsShop;
 	}
-	
+
 	public HashMap<String, HashMap<String, String>> getUserWebsite() {
 		return getUserWebsite;
 	}
