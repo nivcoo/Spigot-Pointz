@@ -3,6 +3,7 @@ package fr.nivcoo.pointz;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,7 +18,6 @@ import fr.nivcoo.pointz.constructor.ItemsShop;
 import fr.nivcoo.pointz.constructor.MWConfig;
 import fr.nivcoo.pointz.inventory.Inventories;
 import fr.nivcoo.pointz.inventory.InventoryManager;
-import fr.nivcoo.pointz.placeholder.RegisterMVDWPAPI;
 import fr.nivcoo.pointz.placeholder.placeholder.PlaceHolderAPI;
 import fr.nivcoo.pointz.utils.Config;
 import fr.nivcoo.pointz.utils.WebsiteAPI;
@@ -60,12 +60,11 @@ public class Pointz extends JavaPlugin implements Listener {
 			HashMap<String, String> check;
 			try {
 				check = websiteAPI.check();
-				if (check.get("error") == "true")
+				if (Objects.equals(check.get("error"), "true"))
 					goodKey = false;
 				pluginWebIsEnabled = true;
 			} catch (Exception e) {
 				goodKey = false;
-				pluginWebIsEnabled = false;
 			}
 
 		}
@@ -82,7 +81,7 @@ public class Pointz extends JavaPlugin implements Listener {
 		else
 			Bukkit.getConsoleSender().sendMessage("§7Public Key: §cNo !");
 		Bukkit.getConsoleSender().sendMessage("");
-		if (goodKey && pluginWebIsEnabled)
+		if (goodKey)
 			Bukkit.getConsoleSender().sendMessage("§aPlugin Enabled !");
 		else {
 			Bukkit.getConsoleSender().sendMessage("§cPlugin Disabled !");
@@ -100,11 +99,6 @@ public class Pointz extends JavaPlugin implements Listener {
 		getCommand("pointz").setExecutor(new Commands());
 		getCommand("pshop").setExecutor(new GuiCommands());
 		getCommand("pconverter").setExecutor(new GuiCommands());
-		if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")
-				&& config.getBoolean("hooks.mvdwplaceholder-api")) {
-			new RegisterMVDWPAPI("pointz_get_money", this);
-
-		}
 
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") && config.getBoolean("hooks.placeholder-api")) {
 			new PlaceHolderAPI().register();

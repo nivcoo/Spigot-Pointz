@@ -1,7 +1,6 @@
 hooks:
   #if plugin is load, if not, there options are useless
   placeholder-api: true
-  mvdwplaceholder-api: true
 
 
 api:
