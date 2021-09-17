@@ -1,11 +1,12 @@
 package fr.nivcoo.pointz.utils;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.zaxxer.hikari.HikariDataSource;
 
 public class DataBase {
 	private Connection conn;

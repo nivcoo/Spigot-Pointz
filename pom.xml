@@ -21,15 +21,15 @@
 
 		<repository>
 			<id>vault-repo</id>
-			<url>http://nexus.hc.to/content/repositories/pub_releases</url>
+			<url>https://nexus.hc.to/content/repositories/pub_releases</url>
 		</repository>
 		<repository>
 			<id>placeholderapi</id>
-			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+			<url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
 		<repository>
 			<id>private</id>
-			<url>http://edensky.fr/artifactory/private/</url>
+			<url>https://edensky.fr/artifactory/private/</url>
 		</repository>
 
 
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
-			<version>1.13</version>
+			<version>1.13.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -58,8 +58,7 @@
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>LATEST</version>
-			<scope>compile</scope>
+			<version>4.0.3</version>
 		</dependency>
 	</dependencies>
 
