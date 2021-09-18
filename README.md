@@ -1,7 +1,9 @@
 # Plugin Pointz -> Convertisseur + Boutique en jeux
 
 ## Description
+
 Le plugin Pointz permet **grossièrement** de lier votre serveur au site (boutique).
+
 - Vérifier premièrement que votre base de données est liée !
 - Ainsi que de vérifier si le plugin **Pointz** est installé sur votre Site-Web
 
@@ -14,6 +16,7 @@ Le plugin Pointz permet **grossièrement** de lier votre serveur au site (boutiq
 # Fichiers :smiley:
 
 ### config.yml
+
 ```yml
 hooks:
   #if plugin is load, if not, there options are useless
@@ -38,6 +41,7 @@ api:
 ```
 
 ### messages.yml
+
 ```yml
 #
 # Messages fr_FR.

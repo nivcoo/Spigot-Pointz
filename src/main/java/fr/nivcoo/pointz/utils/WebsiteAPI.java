@@ -1,5 +1,19 @@
 package fr.nivcoo.pointz.utils;
 
+import com.google.gson.GsonBuilder;
+import fr.nivcoo.pointz.constructor.ItemsConverter;
+import fr.nivcoo.pointz.constructor.ItemsShop;
+import fr.nivcoo.pointz.constructor.MWConfig;
+import fr.nivcoo.pointz.constructor.PlayersInformations;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import javax.crypto.Cipher;
+import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -10,275 +24,263 @@ import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.crypto.Cipher;
-import javax.net.ssl.HttpsURLConnection;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import fr.nivcoo.pointz.constructor.ItemsConverter;
-import fr.nivcoo.pointz.constructor.ItemsShop;
-import fr.nivcoo.pointz.constructor.MWConfig;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class WebsiteAPI {
 
-	private KeyFactory keyFactory;
-	private PublicKey publicKey;
-	private final String USER__AGENT = "Mozilla/5.0";
-	private String url;
+    private KeyFactory keyFactory;
+    private PublicKey publicKey;
+    private final String USER__AGENT = "Mozilla/5.0";
+    private String url;
 
-	public WebsiteAPI(String publicKeyString, String url) throws Exception {
-		this.keyFactory = KeyFactory.getInstance("RSA");
-		this.url = url + "/pointz/api";
-		String stringAfter = publicKeyString.replaceAll("\\n", "").replaceAll("-----BEGIN PUBLIC KEY-----", "")
-				.replaceAll("-----END PUBLIC KEY-----", "").trim();
+    public WebsiteAPI(String publicKeyString, String url) throws Exception {
+        this.keyFactory = KeyFactory.getInstance("RSA");
+        this.url = url + "/pointz/api";
+        String stringAfter = publicKeyString.replaceAll("\\n", "").replaceAll("-----BEGIN PUBLIC KEY-----", "")
+                .replaceAll("-----END PUBLIC KEY-----", "").trim();
 
-		byte[] decoded = Base64.getMimeDecoder().decode(stringAfter);
+        byte[] decoded = Base64.getMimeDecoder().decode(stringAfter);
 
-		KeySpec keySpec = new X509EncodedKeySpec(decoded);
+        KeySpec keySpec = new X509EncodedKeySpec(decoded);
 
-		publicKey = keyFactory.generatePublic(keySpec);
+        publicKey = keyFactory.generatePublic(keySpec);
 
-	}
+    }
 
-	public String encryptToBase64(String plainText) {
-		String encoded = null;
-		try {
-			final Cipher rsa = Cipher.getInstance("RSA");
-			rsa.init(Cipher.ENCRYPT_MODE, publicKey);
-			rsa.update(plainText.getBytes());
-			final byte[] result = rsa.doFinal();
+    public String encryptToBase64(String plainText) {
+        String encoded = null;
+        try {
+            final Cipher rsa = Cipher.getInstance("RSA");
+            rsa.init(Cipher.ENCRYPT_MODE, publicKey);
+            rsa.update(plainText.getBytes());
+            final byte[] result = rsa.doFinal();
 
-			encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(result);
+            encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(result);
 
-		} catch (Exception e) {
-			Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #6");
-		}
-		return encoded;
+        } catch (Exception e) {
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #6");
+        }
+        return encoded;
 
-	}
+    }
 
-	static String urlEncodeUTF8(HashMap<?, ?> map) {
-		StringBuilder sb = new StringBuilder();
+    static String urlEncodeUTF8(HashMap<?, ?> map) {
+        StringBuilder sb = new StringBuilder();
 
-		for (HashMap.Entry<?, ?> entry : map.entrySet()) {
-			if (sb.length() > 0) {
-				sb.append("&");
-			}
-			sb.append(String.format("%s=%s", urlEncodeUTF8(entry.getKey().toString()),
-					urlEncodeUTF8(entry.getValue().toString())));
-		}
-		return sb.toString();
-	}
+        for (HashMap.Entry<?, ?> entry : map.entrySet()) {
+            if (sb.length() > 0) {
+                sb.append("&");
+            }
+            sb.append(String.format("%s=%s", urlEncodeUTF8(entry.getKey().toString()),
+                    urlEncodeUTF8(entry.getValue().toString())));
+        }
+        return sb.toString();
+    }
 
-	static String urlEncodeUTF8(String s) {
-		try {
-			return URLEncoder.encode(s, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new UnsupportedOperationException(e);
-		}
-	}
+    static String urlEncodeUTF8(String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
 
-	private String sendPost(String url, HashMap<?, ?> paramMap) throws Exception {
+    private String sendPost(String url, HashMap<?, ?> paramMap) throws Exception {
 
-		URL obj = new URL(url);
-		String params = "";
-		if (paramMap != null)
-			params = urlEncodeUTF8(paramMap);
+        URL obj = new URL(url);
+        String params = "";
+        if (paramMap != null)
+            params = urlEncodeUTF8(paramMap);
 
-		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+        HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
-		// add reuqest header
-		con.setRequestMethod("POST");
-		con.setRequestProperty("User-Agent", USER__AGENT);
-		con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        // add reuqest header
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER__AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
-		con.setDoOutput(true);
-		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-		wr.writeBytes(encryptToBase64(params));
-		wr.flush();
-		wr.close();
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(encryptToBase64(params));
+        wr.flush();
+        wr.close();
 
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
 
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
 
-		// print result
-		return response.toString();
+        // print result
+        return response.toString();
 
-	}
+    }
 
-	public HashMap<String, String> getPlayerInfos(Player player) {
+    public List<PlayersInformations> getPlayersInfos(List<Player> players) {
 
-		HashMap<String, String> results = new HashMap<>();
+        List<PlayersInformations> results = new ArrayList<>();
 
-		String response = "";
-		try {
-			HashMap<String, String> params = new HashMap<>();
-			params.put("type", "get_player_informations");
-			params.put("username", player.getName());
+        String response;
+        try {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("type", "get_players_informations");
+            params.put("players", players.stream().map(Player::getName)
+                    .collect(Collectors.joining(",")));
 
-			response = sendPost(url, params);
-			JSONParser parse = new JSONParser();
-			JSONObject jobj = (JSONObject) parse.parse(response);
-			results.put("error", String.valueOf(jobj.get("error")));
-			if (jobj.get("money") != null)
-				results.put("money", String.valueOf(jobj.get("money")));
-			if (jobj.get("username") != null)
-				results.put("username", String.valueOf(jobj.get("username")));
+            response = sendPost(url, params);
+            JSONParser parser = new JSONParser();
+            JSONObject jobj = (JSONObject) parser.parse(response);
 
-		} catch (Exception e) {
-			Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #5");
+            GsonBuilder gb = new GsonBuilder();
+            PlayersInformations[] playersObject = gb.create().fromJson(jobj.get("players").toString(), PlayersInformations[].class);
+            results.addAll(Arrays.asList(playersObject));
 
-		}
+        } catch (Exception e) {
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #5");
 
-		return results;
-	}
+        }
 
-	public void setMoneyPlayer(Player player, float getCible_money_after) {
-		try {
-			HashMap<String, String> params = new HashMap<>();
-			params.put("type", "set_money_player");
-			params.put("username", player.getName());
-			params.put("new_money", String.valueOf(getCible_money_after));
+        return results;
+    }
 
-			sendPost(url, params);
+    public void setMoneyPlayer(Player player, double getCible_money_after) {
+        try {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("type", "set_money_player");
+            params.put("username", player.getName());
+            params.put("new_money", String.valueOf(getCible_money_after));
 
-		} catch (Exception e) {
-			Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #4");
+            sendPost(url, params);
 
-		}
+        } catch (Exception e) {
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #4");
 
-	}
+        }
 
-	public HashMap<String, String> check() throws Exception {
-		HashMap<String, String> results = new HashMap<>();
+    }
 
-		String response = "";
+    public HashMap<String, String> check() throws Exception {
+        HashMap<String, String> results = new HashMap<>();
 
-		HashMap<String, String> params = new HashMap<>();
-		params.put("type", "check_key");
+        String response;
 
-		response = sendPost(url, params);
-		JSONParser parse = new JSONParser();
-		JSONObject jobj = (JSONObject) parse.parse(response);
-		results.put("error", String.valueOf(jobj.get("error")));
+        HashMap<String, String> params = new HashMap<>();
+        params.put("type", "check_key");
 
-		return results;
-	}
+        response = sendPost(url, params);
+        JSONParser parse = new JSONParser();
+        JSONObject jobj = (JSONObject) parse.parse(response);
+        results.put("error", String.valueOf(jobj.get("error")));
 
-	public MWConfig initMWConfig() {
+        return results;
+    }
 
-		MWConfig result = null;
+    public MWConfig initMWConfig() {
 
-		String response = "";
-		try {
-			HashMap<String, String> params = new HashMap<>();
-			params.put("type", "get_pointz_config");
+        MWConfig result = null;
 
-			response = sendPost(url, params);
-			JSONParser parse = new JSONParser();
-			JSONObject jobj = (JSONObject) parse.parse(response);
-			if (String.valueOf(jobj.get("error")) == "false")
+        String response;
+        try {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("type", "get_pointz_config");
 
-				result = new MWConfig(String.valueOf(jobj.get("name_shop")), String.valueOf(jobj.get("name_gui")));
+            response = sendPost(url, params);
+            JSONParser parse = new JSONParser();
+            JSONObject jobj = (JSONObject) parse.parse(response);
+            if (String.valueOf(jobj.get("error")) == "false")
 
-		} catch (Exception e) {
-			Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #3");
+                result = new MWConfig(String.valueOf(jobj.get("name_shop")), String.valueOf(jobj.get("name_gui")));
 
-		}
+        } catch (Exception e) {
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #3");
 
-		return result;
-	}
+        }
 
-	public List<ItemsConverter> initItemsConverter() {
-		List<ItemsConverter> result = new ArrayList<>();
+        return result;
+    }
 
-		String response = "";
-		try {
-			HashMap<String, String> params = new HashMap<>();
-			params.put("type", "get_pointz_items_converter");
+    public List<ItemsConverter> initItemsConverter() {
+        List<ItemsConverter> result = new ArrayList<>();
 
-			response = sendPost(url, params);
-			JSONParser parse = new JSONParser();
-			JSONObject jobj = (JSONObject) parse.parse(response);
-			if (String.valueOf(jobj.get("error")) == "true")
-				return null;
-			// loop array
-			JSONArray list = (JSONArray) jobj.get("list");
+        String response;
+        try {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("type", "get_pointz_items_converter");
 
-			for (int i = 0; i < list.size(); i++) {
-				JSONObject item = (JSONObject) list.get(i);
-				item = (JSONObject) item.get("PointzItemsConverter");
-				result.add(new ItemsConverter(String.valueOf(item.get("name")), String.valueOf(item.get("icon")),
-						Integer.parseInt(String.valueOf(item.get("price"))),
-						Integer.parseInt(String.valueOf(item.get("price_ig"))), String.valueOf(item.get("lores")),
-						String.valueOf(item.get("commands"))));
-			}
+            response = sendPost(url, params);
+            JSONArray list = getListFromWebsite(response);
+            if (list == null)
+                return null;
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #2");
+            for (int i = 0; i < list.size(); i++) {
+                JSONObject item = (JSONObject) list.get(i);
+                item = (JSONObject) item.get("PointzItemsConverter");
+                result.add(new ItemsConverter(String.valueOf(item.get("name")), String.valueOf(item.get("icon")),
+                        Integer.parseInt(String.valueOf(item.get("price"))),
+                        Integer.parseInt(String.valueOf(item.get("price_ig"))), String.valueOf(item.get("lores")),
+                        String.valueOf(item.get("commands"))));
+            }
 
-		}
+        } catch (Exception e) {
+            e.printStackTrace();
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #2");
 
-		return result;
-	}
+        }
 
-	public List<ItemsShop> initItemsShop() {
-		List<ItemsShop> result = new ArrayList<>();
+        return result;
+    }
 
-		String response = "";
-		String response_2 = "";
-		try {
-			HashMap<String, String> params = new HashMap<>();
-			params.put("type", "get_pointz_items_shop");
+    public List<ItemsShop> initItemsShop() {
+        List<ItemsShop> result = new ArrayList<>();
 
-			response = sendPost(url, params);
-			JSONParser parse = new JSONParser();
-			JSONObject jobj = (JSONObject) parse.parse(response);
-			if (String.valueOf(jobj.get("error")) == "true")
-				return null;
-			JSONArray list = (JSONArray) jobj.get("list");
+        String response;
+        String response_2;
+        try {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("type", "get_pointz_items_shop");
 
-			for (int i = 0; i < list.size(); i++) {
-				JSONObject item = (JSONObject) list.get(i);
-				item = (JSONObject) item.get("PointzItemsShop");
+            response = sendPost(url, params);
+            JSONArray list = getListFromWebsite(response);
+            if (list == null)
+                return null;
 
-				HashMap<String, String> params_2 = new HashMap<>();
-				params_2.put("type", "get_pointz_item");
-				params_2.put("item_id", String.valueOf(item.get("item_id")));
-				response_2 = sendPost(url, params_2);
-				JSONParser parse_2 = new JSONParser();
-				JSONObject jobj_2 = (JSONObject) parse_2.parse(response_2);
-				jobj_2 = (JSONObject) jobj_2.get("item");
+            for (int i = 0; i < list.size(); i++) {
+                JSONObject item = (JSONObject) list.get(i);
+                item = (JSONObject) item.get("PointzItemsShop");
 
-				result.add(new ItemsShop(String.valueOf(jobj_2.get("name")),
-						Integer.parseInt(String.valueOf(jobj_2.get("price"))),
-						Integer.parseInt(String.valueOf(item.get("price_ig"))), String.valueOf(item.get("icon")),
-						String.valueOf(jobj_2.get("commands"))));
-			}
+                HashMap<String, String> params_2 = new HashMap<>();
+                params_2.put("type", "get_pointz_item");
+                params_2.put("item_id", String.valueOf(item.get("item_id")));
+                response_2 = sendPost(url, params_2);
+                JSONParser parse_2 = new JSONParser();
+                JSONObject jobj_2 = (JSONObject) parse_2.parse(response_2);
+                jobj_2 = (JSONObject) jobj_2.get("item");
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #1");
+                result.add(new ItemsShop(String.valueOf(jobj_2.get("name")),
+                        Integer.parseInt(String.valueOf(jobj_2.get("price"))),
+                        Integer.parseInt(String.valueOf(item.get("price_ig"))), String.valueOf(item.get("icon")),
+                        String.valueOf(jobj_2.get("commands"))));
+            }
 
-		}
+        } catch (Exception e) {
+            e.printStackTrace();
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #1");
 
-		return result;
-	}
+        }
+
+        return result;
+    }
+
+    public JSONArray getListFromWebsite(String response) throws ParseException {
+        JSONParser parse = new JSONParser();
+        JSONObject jobj = (JSONObject) parse.parse(response);
+        if (String.valueOf(jobj.get("error")) == "true")
+            return null;
+        return (JSONArray) jobj.get("list");
+    }
 
 }
