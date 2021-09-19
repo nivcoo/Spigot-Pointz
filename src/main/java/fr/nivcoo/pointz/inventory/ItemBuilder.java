@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.nivcoo.pointz.inventory;
 
 import com.mojang.authlib.GameProfile;
@@ -61,7 +58,7 @@ public class ItemBuilder {
 
     @SuppressWarnings("deprecation")
     public ItemStack build() {
-        ItemStack is = new ItemStack(m, count, (short) data);
+        ItemStack is = new ItemStack(m, count, data);
         ItemMeta im = is.hasItemMeta() ? is.getItemMeta() : Bukkit.getItemFactory().getItemMeta(m);
         if (im != null) {
             im.setDisplayName(name);

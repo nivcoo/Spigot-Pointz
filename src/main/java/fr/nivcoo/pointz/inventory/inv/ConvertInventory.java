@@ -20,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,7 +54,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
 
     @Override
     public String title(Inventory inv) {
-        return (titleGui != null && !titleGui.equalsIgnoreCase("")) ? titleGui : ChatColor.RED.toString() + ChatColor.BOLD + ChatColor.stripColor((String) TITLE);
+        return (titleGui != null && !titleGui.equalsIgnoreCase("")) ? titleGui : ChatColor.RED.toString() + ChatColor.BOLD + ChatColor.stripColor(TITLE);
     }
 
     @Override
@@ -81,7 +80,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
         inv.fill(empty);
         int i = 0;
         for (ItemsConverter offer : getItemsConverter) {
-            List<String> lores = new ArrayList<String>();
+            List<String> lores = new ArrayList<>();
             int a = 0;
             for (String lore : offer.getLores().split("\\[[^\\[]*\\]")) {
                 if (a >= 6)
@@ -108,7 +107,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
                 if (inv.getRows() % 2 == 0)
                     inv.set(5, inv.getRows() / 2 + 1, ClickableItem
                             .of(ItemBuilder.of(icon, 1).name(ChatColor.RED + offer.getName()).lore(lores).build()));
-                List<String> confirmLore = Arrays.asList("§c- §7Cliquez pour confirmer l'achat !");
+                List<String> confirmLore = Collections.singletonList("§c- §7Cliquez pour confirmer l'achat !");
                 ClickableItem confirmation = ClickableItem.of(
                         ItemBuilder
                                 .of(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)
@@ -122,6 +121,8 @@ public class ConvertInventory implements InventoryProvider, Listener {
                             if (user != null) {
                                 RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager()
                                         .getRegistration(Economy.class);
+                                if (rsp == null)
+                                    return;
                                 double playerMoney = rsp.getProvider().getBalance(p);
                                 if (playerMoney >= offer.getPriceIg()) {
                                     rsp.getProvider().withdrawPlayer(p, offer.getPriceIg());
