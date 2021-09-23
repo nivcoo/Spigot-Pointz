@@ -1,15 +1,14 @@
 package fr.nivcoo.pointz.inventory.inv;
 
 import fr.nivcoo.pointz.Pointz;
-import fr.nivcoo.pointz.commands.Commands;
 import fr.nivcoo.pointz.constructor.ItemsConverter;
 import fr.nivcoo.pointz.constructor.PlayersInformations;
 import fr.nivcoo.pointz.inventory.ClickableItem;
 import fr.nivcoo.pointz.inventory.Inventory;
 import fr.nivcoo.pointz.inventory.InventoryProvider;
 import fr.nivcoo.pointz.inventory.ItemBuilder;
-import fr.nivcoo.pointz.utils.Config;
 import fr.nivcoo.pointz.utils.ServerVersion;
+import fr.nivcoo.utilsz.config.Config;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -129,7 +128,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
                                     double playerMoneyWebsite = user.getMoney();
                                     double removePlayerMoney = playerMoneyWebsite + offer.getPrice();
                                     pointz.getWebsiteAPI().setMoneyPlayer(p, removePlayerMoney);
-                                    Commands.sendCommand(p, offer.getCmd());
+                                    pointz.sendCommand(p, offer.getCmd());
                                     p.sendMessage(messages.getString("menu-converter-success-ig", prefix,
                                             String.valueOf(offer.getPrice())));
                                     p.sendMessage(messages.getString("menu-converter-success-web", prefix,

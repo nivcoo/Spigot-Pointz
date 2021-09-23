@@ -1,15 +1,14 @@
 package fr.nivcoo.pointz.inventory.inv;
 
 import fr.nivcoo.pointz.Pointz;
-import fr.nivcoo.pointz.commands.Commands;
 import fr.nivcoo.pointz.constructor.ItemsShop;
 import fr.nivcoo.pointz.constructor.PlayersInformations;
 import fr.nivcoo.pointz.inventory.ClickableItem;
 import fr.nivcoo.pointz.inventory.Inventory;
 import fr.nivcoo.pointz.inventory.InventoryProvider;
 import fr.nivcoo.pointz.inventory.ItemBuilder;
-import fr.nivcoo.pointz.utils.Config;
 import fr.nivcoo.pointz.utils.ServerVersion;
+import fr.nivcoo.utilsz.config.Config;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -117,7 +116,7 @@ public class ShopInventory implements InventoryProvider, Listener {
 
                             pointz.getWebsiteAPI().setMoneyPlayer(p, removePlayerMoney);
 
-                            Commands.sendCommand(p, item.getCmd());
+                            pointz.sendCommand(p, item.getCmd());
                             p.sendMessage(messages.getString("menu-shop-success-web", prefix,
                                     String.valueOf(item.getPrice())));
                         } else {
@@ -147,7 +146,7 @@ public class ShopInventory implements InventoryProvider, Listener {
                                     rsp.getProvider().withdrawPlayer(p, item.getPriceIg());
                                     p.sendMessage(messages.getString("menu-shop-success-ig", prefix,
                                             String.valueOf(item.getPriceIg())));
-                                    Commands.sendCommand(p, item.getCmd());
+                                    pointz.sendCommand(p, item.getCmd());
 
                                 } else {
                                     confirm.getWhoClicked().sendMessage(messages.getString("no-require-money", prefix));

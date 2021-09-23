@@ -7,6 +7,8 @@
 .idea
 *.iml
 
+dependency-reduced-pom.xml
+
 # Ignore output generated files
 target
 out

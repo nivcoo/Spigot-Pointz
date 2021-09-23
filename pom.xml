@@ -5,10 +5,10 @@
 
     <groupId>fr.nivcoo</groupId>
     <artifactId>Pointz</artifactId>
-    <version>2.2.0</version>
+    <version>2.5.0</version>
     <packaging>jar</packaging>
 
-    <name>Pointz</name>
+    <name>${project.artifactId}</name>
     <url>https://github.com/nivcoo/Spigot-Pointz/</url>
 
     <properties>
@@ -66,11 +66,17 @@
             <artifactId>gson</artifactId>
             <version>2.8.8</version>
         </dependency>
+        <dependency>
+            <groupId>fr.nivcoo</groupId>
+            <artifactId>UtilsZ</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <defaultGoal>clean install</defaultGoal>
-        <finalName>Pointz-${project.version}</finalName>
+        <finalName>${project.name}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -87,30 +93,10 @@
                 <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>shaded</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <shadedArtifactAttached>false</shadedArtifactAttached>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.projectlombok:lombok</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

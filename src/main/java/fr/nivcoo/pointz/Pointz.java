@@ -1,17 +1,25 @@
 package fr.nivcoo.pointz;
 
 import fr.nivcoo.pointz.cache.CacheManager;
-import fr.nivcoo.pointz.commands.Commands;
-import fr.nivcoo.pointz.commands.GuiCommands;
+import fr.nivcoo.pointz.commands.commands.CheckCMD;
+import fr.nivcoo.pointz.commands.commands.SendCMD;
+import fr.nivcoo.pointz.commands.commands.gui.ConverterGuiCMD;
+import fr.nivcoo.pointz.commands.commands.gui.ShopGuiCMD;
+import fr.nivcoo.pointz.commands.commands.manage.AddManageCMD;
+import fr.nivcoo.pointz.commands.commands.manage.DelManageCMD;
+import fr.nivcoo.pointz.commands.commands.manage.SetManageCMD;
 import fr.nivcoo.pointz.constructor.ItemsConverter;
 import fr.nivcoo.pointz.constructor.ItemsShop;
 import fr.nivcoo.pointz.constructor.MWConfig;
 import fr.nivcoo.pointz.inventory.Inventories;
 import fr.nivcoo.pointz.inventory.InventoryManager;
 import fr.nivcoo.pointz.placeholder.PlaceHolderAPI;
-import fr.nivcoo.pointz.utils.Config;
 import fr.nivcoo.pointz.utils.WebsiteAPI;
+import fr.nivcoo.utilsz.commands.CommandManager;
+import fr.nivcoo.utilsz.config.Config;
 import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,14 +30,16 @@ import java.util.Objects;
 
 public class Pointz extends JavaPlugin implements Listener {
     private static Pointz INSTANCE;
-    private static Config config;
-    private static Config configMessage;
+    private Config config;
+    private Config configMessage;
     // public static GuiShop guiShop;
     private WebsiteAPI websiteAPI;
     private InventoryManager inventoryManager;
     private Inventories inventories;
     private String prefix;
     private MWConfig mwConfig;
+
+    private CommandManager commandManager;
 
     private CacheManager cacheManager;
     private List<ItemsConverter> getItemsConverter;
@@ -40,8 +50,8 @@ public class Pointz extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         INSTANCE = this;
-        config = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "config.yml"));
-        configMessage = new Config(new File("plugins" + File.separator + "Pointz" + File.separator + "messages.yml"));
+        config = new Config(loadFile("config.yml"));
+        configMessage = new Config(loadFile("messages.yml"));
         prefix = configMessage.getString("prefix");
         saveDefaultConfig();
         boolean goodKey = false;
@@ -94,14 +104,12 @@ public class Pointz extends JavaPlugin implements Listener {
         getItemsConverter = websiteAPI.initItemsConverter();
         getItemsShop = websiteAPI.initItemsShop();
 
-        // guiShop = new GuiShop(this);
-        getCommand("pointz").setExecutor(new Commands());
-        getCommand("pshop").setExecutor(new GuiCommands());
-        getCommand("pconverter").setExecutor(new GuiCommands());
+        commandManager = new CommandManager(this, configMessage, "pointz", "pointz.commands");
+
+        registerCommands();
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") && config.getBoolean("hooks.placeholder-api")) {
             new PlaceHolderAPI().register();
-
         }
 
         inventoryManager = new InventoryManager();
@@ -119,8 +127,35 @@ public class Pointz extends JavaPlugin implements Listener {
             inventoryManager.closeAllInventories();
 
         cacheManager.stopScheduler();
+    }
 
+    public void registerCommands() {
+        commandManager.addCommand(new CheckCMD());
+        commandManager.addCommand(new SendCMD());
 
+        commandManager.addCommand(new AddManageCMD());
+        commandManager.addCommand(new DelManageCMD());
+        commandManager.addCommand(new SetManageCMD());
+
+        commandManager.addCommand(new ConverterGuiCMD());
+        commandManager.addCommand(new ShopGuiCMD());
+    }
+
+    private File loadFile(String path) {
+        File configFile = new File(getDataFolder(), path);
+        if (!configFile.exists()) {
+            configFile.getParentFile().mkdirs();
+            saveResource(path, false);
+        }
+
+        return configFile;
+    }
+
+    public void sendCommand(Player player, String cmds) {
+        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+        for (String cmd : cmds.split("\\[\\{\\+\\}\\]")) {
+            Bukkit.dispatchCommand(console, cmd.replace("{PLAYER}", player.getName()));
+        }
     }
 
     public Config getMessages() {
@@ -161,7 +196,10 @@ public class Pointz extends JavaPlugin implements Listener {
 
     public void saveRessources(String name) {
         saveResource(name, false);
+    }
 
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     public List<ItemsConverter> getItemsConverter() {

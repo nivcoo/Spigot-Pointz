@@ -1,5 +1,5 @@
 name: Pointz
-version: 2.2.0
+version: 2.5.0
 author: nivcoo
 main: fr.nivcoo.pointz.Pointz
 softdepend: [ MVdWPlaceholderAPI, PlaceholderAPI ]
@@ -7,26 +7,28 @@ api-version: 1.13
 commands:
   pointz:
     description: List of commands
-  pshop:
-    description: shop
-  pconverter:
-    description: converter
 permissions:
-  pointz.command:
+  pointz.commands:
     default: op
-    description: /points list
-  pointz.send:
+    description: Pointz Command
+  pointz.command.send:
     default: op
     description: Send money
-  pointz.manage:
+  pointz.command.manage.set:
     default: op
-    description: Add/del/set Money
-  pointz.check:
+    description: Manage player
+  pointz.command.manage.add:
+    default: op
+    description: Manage player
+  pointz.command.manage.del:
+    default: op
+    description: Manage player
+  pointz.command.check:
     default: op
     description: Check money
-  pointz.converter:
+  pointz.command.gui.converter:
     default: op
     description: Converter IG
-  pointz.shop:
+  pointz.command.gui.shop:
     default: op
     description: Shop IG

@@ -2,8 +2,8 @@ package fr.nivcoo.pointz.cache;
 
 import fr.nivcoo.pointz.Pointz;
 import fr.nivcoo.pointz.constructor.PlayersInformations;
-import fr.nivcoo.pointz.utils.Config;
 import fr.nivcoo.pointz.utils.WebsiteAPI;
+import fr.nivcoo.utilsz.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
