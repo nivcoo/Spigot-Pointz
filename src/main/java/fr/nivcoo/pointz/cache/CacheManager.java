@@ -42,9 +42,11 @@ public class CacheManager implements Listener {
         br = new BukkitRunnable() {
             @Override
             public void run() {
-                List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-                List<PlayersInformations> list = getAllPlayersCount(players);
                 playersInformation = new ArrayList<>();
+                List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+                if (players.size() == 0)
+                    return;
+                List<PlayersInformations> list = getAllPlayersCount(players);
                 playersInformation.addAll(list);
             }
 
