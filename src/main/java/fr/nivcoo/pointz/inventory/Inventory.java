@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.nivcoo.pointz.inventory;
 
 import org.bukkit.Bukkit;

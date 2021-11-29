@@ -21,30 +21,29 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.KeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class WebsiteAPI {
 
     private KeyFactory keyFactory;
-    private PublicKey publicKey;
+    private PrivateKey privateKey;
     private final String USER__AGENT = "Mozilla/5.0";
     private String url;
 
-    public WebsiteAPI(String publicKeyString, String url) throws Exception {
+    public WebsiteAPI(String privateKeyString, String url) throws Exception {
         this.keyFactory = KeyFactory.getInstance("RSA");
         this.url = url + "/pointz/api";
-        String stringAfter = publicKeyString.replaceAll("\\n", "").replaceAll("-----BEGIN PUBLIC KEY-----", "")
-                .replaceAll("-----END PUBLIC KEY-----", "").trim();
+        String stringAfter = privateKeyString.replaceAll("\\n", "").replaceAll("-----BEGIN PRIVATE KEY-----", "")
+                .replaceAll("-----END PRIVATE KEY-----", "").trim();
 
         byte[] decoded = Base64.getMimeDecoder().decode(stringAfter);
 
-        KeySpec keySpec = new X509EncodedKeySpec(decoded);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
 
-        publicKey = keyFactory.generatePublic(keySpec);
+        privateKey = keyFactory.generatePrivate(keySpec);
 
     }
 
@@ -52,14 +51,14 @@ public class WebsiteAPI {
         String encoded = null;
         try {
             final Cipher rsa = Cipher.getInstance("RSA");
-            rsa.init(Cipher.ENCRYPT_MODE, publicKey);
+            rsa.init(Cipher.ENCRYPT_MODE, privateKey);
             rsa.update(plainText.getBytes());
             final byte[] result = rsa.doFinal();
 
             encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(result);
 
         } catch (Exception e) {
-            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #6");
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with private key #6");
         }
         return encoded;
 
@@ -143,7 +142,7 @@ public class WebsiteAPI {
             results.addAll(Arrays.asList(playersObject));
 
         } catch (Exception e) {
-            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #5");
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with private key #5");
 
         }
 
@@ -160,7 +159,7 @@ public class WebsiteAPI {
             sendPost(url, params);
 
         } catch (Exception e) {
-            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #4");
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with private key #4");
 
         }
 
@@ -199,7 +198,7 @@ public class WebsiteAPI {
                 result = new MWConfig(String.valueOf(jobj.get("name_shop")), String.valueOf(jobj.get("name_gui")));
 
         } catch (Exception e) {
-            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #3");
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with private key #3");
 
         }
 
@@ -230,7 +229,7 @@ public class WebsiteAPI {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #2");
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with private key #2");
 
         }
 
@@ -271,7 +270,7 @@ public class WebsiteAPI {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with public key #1");
+            Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with private key #1");
 
         }
 

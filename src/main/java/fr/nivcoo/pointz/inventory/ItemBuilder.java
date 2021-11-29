@@ -1,18 +1,11 @@
 package fr.nivcoo.pointz.inventory;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import fr.nivcoo.pointz.utils.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
 
 public class ItemBuilder {
     private Material m;
@@ -63,21 +56,6 @@ public class ItemBuilder {
         if (im != null) {
             im.setDisplayName(name);
             im.setLore(lores);
-            if (m == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM")) && texture != null && !"".equalsIgnoreCase(texture.trim())) {
-                SkullMeta headMeta = (SkullMeta) im;
-                GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-
-                profile.getProperties().put("textures", new Property("textures", texture));
-
-                try {
-                    Field profileField = headMeta.getClass().getDeclaredField("profile");
-                    profileField.setAccessible(true);
-                    profileField.set(headMeta, profile);
-                } catch (IllegalArgumentException | NoSuchFieldException | SecurityException
-                        | IllegalAccessException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "Error while setting head texture", ex);
-                }
-            }
             is.setItemMeta(im);
         }
 

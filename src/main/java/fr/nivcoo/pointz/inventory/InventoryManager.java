@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.nivcoo.pointz.inventory;
 
 import fr.nivcoo.pointz.Pointz;
@@ -32,7 +29,7 @@ public class InventoryManager implements Listener {
             for (Inventory inv : inventories.values()) {
                 int tick = 0;
                 Object currentTick = inv.get(Inventory.TICK);
-                if (currentTick != null && currentTick instanceof Integer)
+                if (currentTick instanceof Integer)
                     tick = Integer.parseInt(currentTick.toString());
                 inv.put(Inventory.TICK, tick + 1);
                 inv.getInventoryProvider().update(inv);

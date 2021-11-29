@@ -58,12 +58,11 @@ public class Pointz extends JavaPlugin implements Listener {
         boolean pluginWebIsEnabled = false;
 
         try {
-            websiteAPI = new WebsiteAPI(config.getString("api.public_key"), config.getString("api.website_url"));
+            websiteAPI = new WebsiteAPI(config.getString("api.private_key"), config.getString("api.website_url"));
             goodKey = true;
         } catch (Exception e) {
-            e.printStackTrace();
             Bukkit.getLogger()
-                    .severe("[Pointz] The public_key isn't valid ! Please copy it on the website in config section");
+                    .severe("[Pointz] The private_key isn't valid ! Please copy it on the website in config section");
         }
         if (websiteAPI != null) {
             HashMap<String, String> check;
@@ -126,7 +125,8 @@ public class Pointz extends JavaPlugin implements Listener {
         if (inventoryManager != null)
             inventoryManager.closeAllInventories();
 
-        cacheManager.stopScheduler();
+        if (cacheManager != null)
+            cacheManager.stopScheduler();
     }
 
     public void registerCommands() {
