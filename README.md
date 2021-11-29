@@ -49,29 +49,25 @@ api:
 # but do not delete placeholder {1}
 #
 prefix: "&7[&c&lPointz&7]"
-# Title /help
-command-title: "{prefix} &7Liste des commandes"
-# Check command /help messages
-command-check: "&8&l- &a/pointz check  "
-command-check-desc: "&7- Regarder le nombre de points boutique que l'on a."
-# Send command /help messages
-command-send: "&8&l- &a/pointz send <player> <number>  "
-command-send-desc: "&7- Envoyer ses points a un joueur."
-# Manage command /help messages
-command-admin-desc: "&7- admin."
-command-set: "&8&l- &a/pointz set <player> <number>  "
-command-add: "&8&l- &a/pointz add <player> <number>  "
-command-del: "&8&l- &a/pointz del <player> <number>  "
-# pshop /help messages
-command-shop: "&8&l- &a/pshop  "
-command-shop-desc: "&7- Ouvre le shop IG."
-# pconverter /help messages
-command-converter: "&8&l- &a/pconverter  "
-command-converter-desc: "&7- Ouvre le convertisseur de point boutique."
+
+messages:
+  commands:
+    incorrect_usage: "&fCorrect Usage : /{0}"
+    no_permission: "&fCommande inconnue."
+    help:
+      - "&7&m------------------&8[&6Help Panel&8]&7&m------------------"
+      - "{!pointz.command.send}&6/pointz send <player> <number> &eSend money to player"
+      - "{!pointz.command.manage.set}&6/pointz set <player> <number> &eManage Player"
+      - "{!pointz.command.manage.add}&6/pointz add <player> <number> &eManage Player"
+      - "{!pointz.command.manage.del}&6/pointz del <player> <number> &eManage Player"
+      - "{!pointz.command.check}&6/pointz check &eLook at the number of store points you have."
+      - "{!pointz.command.gui.converter}&6/pointz converter &eOpens the shop point Converter."
+      - "{!pointz.command.gui.shop}&6/pointz shop &eOpen the IG Shop."
+      - "&7&m----------------------------------------------"
+
 #
 # Requierment messages.
 #
-no-permission: "{prefix} &3Tu n'as pas la permission"
 no-register: "{prefix} Le joueur n'est pas inscrit sur le site"
 no-register-own: "{prefix} Tu n'es pas inscrit sur le site"
 not-connected: "{prefix} Le joueur n'est pas connecté !"
@@ -108,5 +104,5 @@ command-del-other: "{prefix} {1} vient de t'enlever {2} points sur la boutique !
 menu-converter-success-ig: "{prefix} Tu viens de payer {1} points sur la boutique in game"
 menu-converter-success-web: "{prefix} Tu as maintenant {1} points sur la boutique"
 menu-shop-success-ig: "{prefix} Tu viens de payer {1}$ et tu viens de recevoir ton achat !"
-menu-shop-success-web: "{prefix} Tu viens de payer {1}points et tu viens de recevoir ton achat !"
+menu-shop-success-web: "{prefix} Tu viens de payer {1} points et tu viens de recevoir ton achat !"
 ```
