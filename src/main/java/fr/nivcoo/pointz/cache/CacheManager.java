@@ -43,7 +43,7 @@ public class CacheManager implements Listener {
             @Override
             public void run() {
                 playersInformation = new ArrayList<>();
-                List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+                ArrayList<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
                 if (players.size() == 0)
                     return;
                 List<PlayersInformations> list = getAllPlayersCount(players);
@@ -61,11 +61,9 @@ public class CacheManager implements Listener {
     }
 
     public PlayersInformations getPlayerInformations(Player player) {
-        PlayersInformations p = null;
-        for (PlayersInformations pi : playersInformation) {
-            if (pi.getUsername().equals(player.getName()))
-                p = pi;
-        }
+        PlayersInformations p = playersInformation.stream()
+                .filter(playerInformation -> player.getName().equals(playerInformation.getUsername()))
+                .findAny().orElse(null);
         if (p == null) {
             playersInformation.add(getPlayerCountFromWebsite(player));
         }

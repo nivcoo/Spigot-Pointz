@@ -108,7 +108,7 @@ public class WebsiteAPI {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -128,15 +128,18 @@ public class WebsiteAPI {
         try {
             HashMap<String, String> params = new HashMap<>();
             params.put("type", "get_players_informations");
-            params.put("players", players.stream().map(Player::getName)
-                    .collect(Collectors.joining(",")));
+            String playersList = players.stream().map(Player::getName)
+                    .collect(Collectors.joining(","));
+
+            params.put("players", playersList);
 
             response = sendPost(url, params);
             JSONParser parser = new JSONParser();
             JSONObject jobj = (JSONObject) parser.parse(response);
 
             GsonBuilder gb = new GsonBuilder();
-            PlayersInformations[] playersObject = gb.create().fromJson(jobj.get("players").toString(), PlayersInformations[].class);
+            String information = jobj.get("players").toString();
+            PlayersInformations[] playersObject = gb.create().fromJson(information, PlayersInformations[].class);
             results.addAll(Arrays.asList(playersObject));
 
         } catch (Exception e) {
@@ -147,12 +150,12 @@ public class WebsiteAPI {
         return results;
     }
 
-    public void setMoneyPlayer(Player player, double getCible_money_after) {
+    public void setMoneyPlayer(Player player, double getCibleMoneyAfter) {
         try {
             HashMap<String, String> params = new HashMap<>();
             params.put("type", "set_money_player");
             params.put("username", player.getName());
-            params.put("new_money", String.valueOf(getCible_money_after));
+            params.put("new_money", String.valueOf(getCibleMoneyAfter));
 
             sendPost(url, params);
 
@@ -191,7 +194,7 @@ public class WebsiteAPI {
             response = sendPost(url, params);
             JSONParser parse = new JSONParser();
             JSONObject jobj = (JSONObject) parse.parse(response);
-            if (String.valueOf(jobj.get("error")) == "false")
+            if (String.valueOf(jobj.get("error")).equals("false"))
 
                 result = new MWConfig(String.valueOf(jobj.get("name_shop")), String.valueOf(jobj.get("name_gui")));
 
@@ -216,8 +219,8 @@ public class WebsiteAPI {
             if (list == null)
                 return null;
 
-            for (int i = 0; i < list.size(); i++) {
-                JSONObject item = (JSONObject) list.get(i);
+            for (Object o : list) {
+                JSONObject item = (JSONObject) o;
                 item = (JSONObject) item.get("PointzItemsConverter");
                 result.add(new ItemsConverter(String.valueOf(item.get("name")), String.valueOf(item.get("icon")),
                         Integer.parseInt(String.valueOf(item.get("price"))),
@@ -248,8 +251,8 @@ public class WebsiteAPI {
             if (list == null)
                 return null;
 
-            for (int i = 0; i < list.size(); i++) {
-                JSONObject item = (JSONObject) list.get(i);
+            for (Object o : list) {
+                JSONObject item = (JSONObject) o;
                 item = (JSONObject) item.get("PointzItemsShop");
 
                 HashMap<String, String> params_2 = new HashMap<>();
@@ -278,7 +281,7 @@ public class WebsiteAPI {
     public JSONArray getListFromWebsite(String response) throws ParseException {
         JSONParser parse = new JSONParser();
         JSONObject jobj = (JSONObject) parse.parse(response);
-        if (String.valueOf(jobj.get("error")) == "true")
+        if (String.valueOf(jobj.get("error")).equals("true"))
             return null;
         return (JSONArray) jobj.get("list");
     }
