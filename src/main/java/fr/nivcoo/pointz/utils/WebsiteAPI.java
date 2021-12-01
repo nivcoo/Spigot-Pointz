@@ -13,6 +13,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -20,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -47,19 +51,38 @@ public class WebsiteAPI {
 
     }
 
+
     public String encryptToBase64(String plainText) {
         String encoded = null;
         try {
             final Cipher rsa = Cipher.getInstance("RSA");
             rsa.init(Cipher.ENCRYPT_MODE, privateKey);
-            rsa.update(plainText.getBytes());
-            final byte[] result = rsa.doFinal();
+            HashMap<String, String> informations = new HashMap<>();
+            KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+            keyGen.init(128);
+            SecretKey secretKey = keyGen.generateKey();
+            byte[] encodedKey = rsa.doFinal(secretKey.getEncoded());
+            encoded = Base64.getEncoder().encodeToString(encodedKey);
 
-            encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(result);
+            byte[] iv = new byte[16];
+            informations.put("key", encoded);
+            informations.put("iv", Base64.getEncoder().encodeToString(iv));
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(iv));
+
+            byte[] encodedData = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
+            encoded = Base64.getEncoder().encodeToString(encodedData);
+            informations.put("data", encoded);
+            JSONObject jso = new JSONObject(informations);
+
+            encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(jso.toString().getBytes());
 
         } catch (Exception e) {
             Bukkit.getLogger().severe("[Pointz] You must Install the website plugin and link it with private key #6");
         }
+
         return encoded;
 
     }
@@ -134,10 +157,10 @@ public class WebsiteAPI {
 
             response = sendPost(url, params);
             JSONParser parser = new JSONParser();
-            JSONObject jobj = (JSONObject) parser.parse(response);
+            JSONObject jsonObject = (JSONObject) parser.parse(response);
 
             GsonBuilder gb = new GsonBuilder();
-            String information = jobj.get("players").toString();
+            String information = jsonObject.get("players").toString();
             PlayersInformations[] playersObject = gb.create().fromJson(information, PlayersInformations[].class);
             results.addAll(Arrays.asList(playersObject));
 
@@ -216,7 +239,7 @@ public class WebsiteAPI {
             response = sendPost(url, params);
             JSONArray list = getListFromWebsite(response);
             if (list == null)
-                return null;
+                return result;
 
             for (Object o : list) {
                 JSONObject item = (JSONObject) o;
@@ -238,7 +261,6 @@ public class WebsiteAPI {
 
     public List<ItemsShop> initItemsShop() {
         List<ItemsShop> result = new ArrayList<>();
-
         String response;
         String response_2;
         try {
@@ -247,8 +269,9 @@ public class WebsiteAPI {
 
             response = sendPost(url, params);
             JSONArray list = getListFromWebsite(response);
+
             if (list == null)
-                return null;
+                return result;
 
             for (Object o : list) {
                 JSONObject item = (JSONObject) o;
