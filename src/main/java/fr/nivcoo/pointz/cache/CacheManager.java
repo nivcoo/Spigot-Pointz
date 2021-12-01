@@ -64,9 +64,12 @@ public class CacheManager implements Listener {
         PlayersInformations p = playersInformation.stream()
                 .filter(playerInformation -> player.getName().equals(playerInformation.getUsername()))
                 .findAny().orElse(null);
+
         if (p == null) {
-            playersInformation.add(getPlayerCountFromWebsite(player));
+            p = getPlayerCountFromWebsite(player);
+            playersInformation.add(p);
         }
+        System.out.println(p.getUsername());
         return p;
     }
 
