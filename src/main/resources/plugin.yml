@@ -1,5 +1,5 @@
 name: Pointz
-version: 2.6.0
+version: 2.6.5
 author: nivcoo
 main: fr.nivcoo.pointz.Pointz
 softdepend: [ MVdWPlaceholderAPI, PlaceholderAPI ]
