@@ -69,7 +69,6 @@ public class CacheManager implements Listener {
             p = getPlayerCountFromWebsite(player);
             playersInformation.add(p);
         }
-        System.out.println(p.getUsername());
         return p;
     }
 
