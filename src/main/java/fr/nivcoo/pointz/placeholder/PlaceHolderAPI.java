@@ -5,25 +5,29 @@ import fr.nivcoo.pointz.constructor.PlayersInformations;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class PlaceHolderAPI extends PlaceholderExpansion {
 
-    @Override
-    public String getAuthor() {
-        // TODO Auto-generated method stub
-        return "nivcoo";
+    private Pointz pointz;
+
+    public PlaceHolderAPI() {
+        pointz = Pointz.get();
     }
 
     @Override
-    public String getIdentifier() {
-        // TODO Auto-generated method stub
+    public @NotNull String getAuthor() {
+        return pointz.getDescription().getAuthors().toString();
+    }
+
+    @Override
+    public @NotNull String getIdentifier() {
         return "pointz";
     }
 
     @Override
-    public String getVersion() {
-        // TODO Auto-generated method stub
-        return "0.0.1";
+    public @NotNull String getVersion() {
+        return pointz.getDescription().getVersion();
     }
 
     @Override
