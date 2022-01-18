@@ -1,5 +1,7 @@
 # Plugin Pointz -> Convertisseur + Boutique en jeux
 
+You can find all jars on my [Jenkins](https://jenkins.revolis.fr/) !
+
 ## Description
 
 Le plugin Pointz permet **grossièrement** de lier votre serveur au site (boutique).
