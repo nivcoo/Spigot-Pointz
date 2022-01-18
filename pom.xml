@@ -31,6 +31,10 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
+        <repository>
+            <id>revolis</id>
+            <url>https://repo.revolis.fr/repository/minecraft/</url>
+        </repository>
 
 
     </repositories>
