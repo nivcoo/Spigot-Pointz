@@ -69,7 +69,7 @@
         <dependency>
             <groupId>fr.nivcoo</groupId>
             <artifactId>UtilsZ</artifactId>
-            <version>1.0.12</version>
+            <version>1.1.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

@@ -12,11 +12,11 @@ import fr.nivcoo.pointz.constructor.ItemsConverter;
 import fr.nivcoo.pointz.constructor.ItemsShop;
 import fr.nivcoo.pointz.constructor.MWConfig;
 import fr.nivcoo.pointz.inventory.Inventories;
-import fr.nivcoo.pointz.inventory.InventoryManager;
 import fr.nivcoo.pointz.placeholder.PlaceHolderAPI;
 import fr.nivcoo.pointz.utils.WebsiteAPI;
 import fr.nivcoo.utilsz.commands.CommandManager;
 import fr.nivcoo.utilsz.config.Config;
+import fr.nivcoo.utilsz.inventory.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -111,7 +111,7 @@ public class Pointz extends JavaPlugin implements Listener {
             new PlaceHolderAPI().register();
         }
 
-        inventoryManager = new InventoryManager();
+        inventoryManager = new InventoryManager(this);
         inventoryManager.init();
         inventories = new Inventories();
 
