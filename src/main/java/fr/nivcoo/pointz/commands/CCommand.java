@@ -28,7 +28,9 @@ public interface CCommand extends Command {
 
     default PlayersInformations getWebsiteUser(Player p) {
         List<PlayersInformations> users = Pointz.get().getWebsiteAPI().getPlayersInfos(Collections.singletonList(p));
-        return users.get(0);
+        if (users.size() > 0)
+            return users.get(0);
+        return null;
     }
 
     default List<String> getOnlinePlayersNames() {
