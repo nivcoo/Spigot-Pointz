@@ -1,5 +1,5 @@
 name: Pointz
-version: 2.6.8
+version: 2.6.9
 author: nivcoo
 main: fr.nivcoo.pointz.Pointz
 softdepend: [ PlaceholderAPI ]
