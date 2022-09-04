@@ -3,12 +3,12 @@ package fr.nivcoo.pointz.inventory.inv;
 import fr.nivcoo.pointz.Pointz;
 import fr.nivcoo.pointz.constructor.ItemsConverter;
 import fr.nivcoo.pointz.constructor.PlayersInformations;
-import fr.nivcoo.pointz.utils.ServerVersion;
 import fr.nivcoo.utilsz.config.Config;
 import fr.nivcoo.utilsz.inventory.ClickableItem;
 import fr.nivcoo.utilsz.inventory.Inventory;
 import fr.nivcoo.utilsz.inventory.InventoryProvider;
 import fr.nivcoo.utilsz.inventory.ItemBuilder;
+import fr.nivcoo.utilsz.version.ServerVersion;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -115,7 +115,8 @@ public class ConvertInventory implements InventoryProvider, Listener {
                                 .name(ChatColor.GREEN + "§aConvertir | Confirmation").lore(confirmLore).build(),
                         confirm -> {
                             Player p = (Player) confirm.getWhoClicked();
-                            List<PlayersInformations> users = pointz.getWebsiteAPI().getPlayersInfos(Collections.singletonList(p));
+                            String playerName = p.getName();
+                            List<PlayersInformations> users = pointz.getWebsiteAPI().getPlayersInfos(Collections.singletonList(playerName));
                             PlayersInformations user = users.get(0);
                             if (user != null) {
                                 RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager()
@@ -127,7 +128,7 @@ public class ConvertInventory implements InventoryProvider, Listener {
                                     rsp.getProvider().withdrawPlayer(p, offer.getPriceIg());
                                     double playerMoneyWebsite = user.getMoney();
                                     double removePlayerMoney = playerMoneyWebsite + offer.getPrice();
-                                    pointz.getWebsiteAPI().setMoneyPlayer(p, removePlayerMoney);
+                                    pointz.getWebsiteAPI().setMoneyPlayer(playerName, removePlayerMoney);
                                     pointz.sendCommand(p, offer.getCmd());
                                     p.sendMessage(messages.getString("menu-converter-success-ig", prefix,
                                             String.valueOf(offer.getPrice())));

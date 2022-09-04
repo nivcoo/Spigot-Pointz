@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CacheManager implements Listener {
 
@@ -35,7 +36,7 @@ public class CacheManager implements Listener {
     }
 
     public List<PlayersInformations> getAllPlayersCount(List<Player> players) {
-        return websiteAPI.getPlayersInfos(players);
+        return websiteAPI.getPlayersInfos(players.stream().map(Player::getName).collect(Collectors.toList()));
     }
 
     public void startScheduler() {
@@ -74,7 +75,7 @@ public class CacheManager implements Listener {
 
 
     public PlayersInformations getPlayerCountFromWebsite(Player player) {
-        List<PlayersInformations> list = websiteAPI.getPlayersInfos(Collections.singletonList(player));
+        List<PlayersInformations> list = websiteAPI.getPlayersInfos(Collections.singletonList(player.getName()));
         if (list == null)
             return null;
         return list.get(0);

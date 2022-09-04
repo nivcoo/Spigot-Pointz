@@ -51,7 +51,8 @@ public class CheckCMD implements CCommand {
     public void execute(Pointz plugin, CommandSender sender, String[] args) {
 
         Player player = (Player) sender;
-        PlayersInformations user = getWebsiteUser(player);
+        String playerName = player.getName();
+        PlayersInformations user = getWebsiteUser(playerName);
         Config message = Pointz.get().getMessages();
         String prefix = plugin.getPrefix();
         if (user == null) {

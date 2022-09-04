@@ -53,7 +53,8 @@ public class SendCMD implements CCommand {
     public void execute(Pointz plugin, CommandSender sender, String[] args) {
 
         Player player = (Player) sender;
-        PlayersInformations user = getWebsiteUser(player);
+        String playerName = player.getName();
+        PlayersInformations user = getWebsiteUser(playerName);
         Config message = Pointz.get().getMessages();
         String prefix = plugin.getPrefix();
         int numberArg_2;
@@ -68,32 +69,32 @@ public class SendCMD implements CCommand {
             return;
         }
 
-        Player cible = Bukkit.getPlayer(args[1]);
-        PlayersInformations user_cible = getWebsiteUser(cible);
+        String targetName = String.valueOf(args[1]);
 
-        String playerName = player.getName();
+        Player target = Bukkit.getPlayer(targetName);
+        PlayersInformations userTarget = getWebsiteUser(targetName);
 
-        if (cible != null && cible != player) {
-            if (user_cible != null) {
+        if (target != null && target != player) {
+            if (userTarget != null) {
                 if (user != null) {
                     double getPlayer_money = user.getMoney();
 
                     if (getPlayer_money >= numberArg_2) {
 
                         double getPlayer_money_after = getPlayer_money - numberArg_2;
-                        plugin.getWebsiteAPI().setMoneyPlayer(player,
+                        plugin.getWebsiteAPI().setMoneyPlayer(playerName,
                                 getPlayer_money_after);
-                        double getCible_money = user_cible.getMoney();
+                        double getCible_money = userTarget.getMoney();
 
                         double getCible_money_after = getCible_money + numberArg_2;
-                        plugin.getWebsiteAPI().setMoneyPlayer(cible, getCible_money_after);
+                        plugin.getWebsiteAPI().setMoneyPlayer(targetName, getCible_money_after);
                         player.sendMessage(message
                                 .getString("send-old", prefix,
                                         String.valueOf(getPlayer_money))
                                 .replace("{1}", "" + getPlayer_money));
                         player.sendMessage(message.getString("send-new", prefix,
                                 String.valueOf(getPlayer_money_after)));
-                        cible.sendMessage(message.getString("send-cible", prefix,
+                        target.sendMessage(message.getString("send-cible", prefix,
                                 playerName, String.valueOf(numberArg_2)));
 
                     } else {

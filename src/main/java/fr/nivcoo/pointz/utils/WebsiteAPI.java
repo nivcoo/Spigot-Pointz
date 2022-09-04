@@ -142,7 +142,7 @@ public class WebsiteAPI {
 
     }
 
-    public List<PlayersInformations> getPlayersInfos(List<Player> players) {
+    public List<PlayersInformations> getPlayersInfos(List<String> players) {
 
         List<PlayersInformations> results = new ArrayList<>();
 
@@ -150,8 +150,7 @@ public class WebsiteAPI {
         try {
             HashMap<String, String> params = new HashMap<>();
             params.put("type", "get_players_informations");
-            String playersList = players.stream().map(Player::getName)
-                    .collect(Collectors.joining(","));
+            String playersList = String.join(",", players);
 
             params.put("players", playersList);
 
@@ -172,11 +171,11 @@ public class WebsiteAPI {
         return results;
     }
 
-    public void setMoneyPlayer(Player player, double getCibleMoneyAfter) {
+    public void setMoneyPlayer(String username, double getCibleMoneyAfter) {
         try {
             HashMap<String, String> params = new HashMap<>();
             params.put("type", "set_money_player");
-            params.put("username", player.getName());
+            params.put("username", username);
             params.put("new_money", String.valueOf(getCibleMoneyAfter));
 
             sendPost(url, params);

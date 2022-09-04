@@ -65,23 +65,25 @@ public class SetManageCMD implements CCommand {
             return;
         }
 
-        Player cible = Bukkit.getPlayer(args[1]);
-        PlayersInformations user_cible = getWebsiteUser(cible);
+        String targetName = String.valueOf(args[1]);
+
+        Player target = Bukkit.getPlayer(targetName);
+        PlayersInformations user_target = getWebsiteUser(targetName);
 
         String name = sender.getName();
-        if (cible != null && Bukkit.getOnlinePlayers().contains(cible)) {
-            if (user_cible != null) {
-                plugin.getWebsiteAPI().setMoneyPlayer(cible, numberArg_2);
-                if (sender != cible)
-                    sender.sendMessage(message.getString("command-set-own", prefix,
-                            String.valueOf(numberArg_2), String.valueOf(args[1])));
 
-                cible.sendMessage(message.getString("command-set-other", prefix,
+        if (user_target != null) {
+            plugin.getWebsiteAPI().setMoneyPlayer(targetName, numberArg_2);
+            if (!name.equals(targetName))
+                sender.sendMessage(message.getString("command-set-own", prefix,
+                        String.valueOf(numberArg_2), targetName));
+            if (target != null && Bukkit.getOnlinePlayers().contains(target))
+                target.sendMessage(message.getString("command-set-other", prefix,
                         name, String.valueOf(numberArg_2)));
-            } else {
-                sender.sendMessage(message.getString("no-register", prefix));
-            }
+        } else {
+            sender.sendMessage(message.getString("no-register", prefix));
         }
+
 
     }
 

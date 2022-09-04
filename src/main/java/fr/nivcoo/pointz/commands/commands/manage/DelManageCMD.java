@@ -66,34 +66,33 @@ public class DelManageCMD implements CCommand {
             return;
         }
 
-        Player cible = Bukkit.getPlayer(args[1]);
-        PlayersInformations user_cible = getWebsiteUser(cible);
+        String targetName = String.valueOf(args[1]);
+
+        Player target = Bukkit.getPlayer(targetName);
+        PlayersInformations user_target = getWebsiteUser(targetName);
         String name = sender.getName();
-        if (cible != null && Bukkit.getOnlinePlayers().contains(cible)) {
+        if (user_target != null) {
 
-            if (user_cible != null) {
+            double playerMoney = user_target.getMoney();
 
-                double playerMoney = user_cible.getMoney();
-
-                double newPlayerMoney = playerMoney - numberArg_2;
-                if (newPlayerMoney >= 0) {
-                    plugin.getWebsiteAPI().setMoneyPlayer(cible, newPlayerMoney);
-                    if (sender != cible)
-                        sender.sendMessage(message.getString("command-del-own", prefix,
-                                String.valueOf(numberArg_2), args[1]));
-                    cible.sendMessage(message.getString("command-del-other", prefix, name,
+            double newPlayerMoney = playerMoney - numberArg_2;
+            if (newPlayerMoney >= 0) {
+                plugin.getWebsiteAPI().setMoneyPlayer(targetName, newPlayerMoney);
+                if (!name.equals(targetName))
+                    sender.sendMessage(message.getString("command-del-own", prefix,
+                            String.valueOf(numberArg_2), targetName));
+                if (target != null && Bukkit.getOnlinePlayers().contains(target))
+                    target.sendMessage(message.getString("command-del-other", prefix, name,
                             String.valueOf(numberArg_2)));
 
-                } else {
-                    sender.sendMessage("Le joueur n'a pas autant d'argent.");
-                }
-
             } else {
-                sender.sendMessage(message.getString("no-register", prefix));
+                sender.sendMessage("Le joueur n'a pas autant d'argent.");
             }
+
         } else {
-            sender.sendMessage(message.getString("not-connected", prefix));
+            sender.sendMessage(message.getString("no-register", prefix));
         }
+
 
     }
 

@@ -26,8 +26,8 @@ public interface CCommand extends Command {
 
     List<String> tabComplete(Pointz plugin, CommandSender sender, String[] args);
 
-    default PlayersInformations getWebsiteUser(Player p) {
-        List<PlayersInformations> users = Pointz.get().getWebsiteAPI().getPlayersInfos(Collections.singletonList(p));
+    default PlayersInformations getWebsiteUser(String playerName) {
+        List<PlayersInformations> users = Pointz.get().getWebsiteAPI().getPlayersInfos(Collections.singletonList(playerName));
         if (users.size() > 0)
             return users.get(0);
         return null;
